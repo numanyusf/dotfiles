@@ -74,7 +74,12 @@ esac
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
-    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    # LS_COLORS from vivid (one-dark theme, dir overridden to gold) — see ~/.dotfiles/ls_colors
+    if [ -r ~/.dotfiles/ls_colors ]; then
+        export LS_COLORS="$(cat ~/.dotfiles/ls_colors)"
+    else
+        eval "$(dircolors -b)"
+    fi
     alias ls='ls --color=auto'
     #alias dir='dir --color=auto'
     #alias vdir='vdir --color=auto'

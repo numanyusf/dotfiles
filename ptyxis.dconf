@@ -1,0 +1,11 @@
+[/]
+default-profile-uuid='42713f63ae208eb8e2201a6c6a5eba09'
+font-name='MesloLGM Nerd Font 13'
+profile-uuids=['42713f63ae208eb8e2201a6c6a5eba09']
+toast-on-copy-clipboard=true
+use-system-font=false
+window-size=(uint32 124, uint32 39)
+
+[Profiles/42713f63ae208eb8e2201a6c6a5eba09]
+opacity=0.90000000000000002
+palette='one-sysaccent'

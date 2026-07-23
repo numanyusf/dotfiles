@@ -21,6 +21,66 @@ log()  { printf '\033[1;33m==>\033[0m %s\n' "$*"; }
 warn() { printf '\033[1;31m!!\033[0m  %s\n' "$*"; }
 
 # ---------------------------------------------------------------------------
+# 0. Preflight — sanity-check the target machine before changing anything
+# ---------------------------------------------------------------------------
+preflight() {
+  log "Preflight checks"
+  local warned=0
+
+  # OS: expect Ubuntu (the apt repos + package names assume it)
+  local id="" codename="" ver=""
+  if [ -r /etc/os-release ]; then
+    id=$(. /etc/os-release; echo "${ID:-}")
+    codename=$(. /etc/os-release; echo "${VERSION_CODENAME:-}")
+    ver=$(. /etc/os-release; echo "${VERSION_ID:-}")
+  fi
+  if [ "$id" != "ubuntu" ]; then
+    warn "OS is '${id:-unknown}', not ubuntu — apt repos/package names may not match."
+    warned=1
+  else
+    log "  Ubuntu $ver ($codename)"
+  fi
+
+  # Ubuntu >= 24.04 needed for eza/vivid in the archive
+  # (numeric compare: 24.04 -> 2404)
+  local vernum="${ver//./}"
+  if [ -n "$vernum" ] && [ "$vernum" -lt 2404 ] 2>/dev/null; then
+    warn "Ubuntu $ver < 24.04: 'eza' and 'vivid' aren't in the archive — install them"
+    warn "   another way (cargo/binary) or drop them from packages.txt."
+    warned=1
+  fi
+
+  # GNOME desktop (Ptyxis dconf + oh-my-posh assume it)
+  if [ "${XDG_CURRENT_DESKTOP:-}" != "" ] && ! echo "${XDG_CURRENT_DESKTOP}" | grep -qi gnome; then
+    warn "Desktop is '${XDG_CURRENT_DESKTOP}', not GNOME — Ptyxis dconf restore may be a no-op."
+    warned=1
+  fi
+  # Ptyxis is the default terminal only on newer Ubuntu; note it if absent
+  if [ -n "$vernum" ] && [ "$vernum" -lt 2510 ] 2>/dev/null; then
+    warn "On Ubuntu < 25.10 the default terminal is gnome-terminal, not Ptyxis —"
+    warn "   the ptyxis.dconf restore only matters if you install Ptyxis yourself."
+  fi
+
+  # Username: gitconfig hardcodes an absolute /home/numan/.ssh signers path
+  if [ "$(id -un)" != "numan" ]; then
+    warn "You are '$(id -un)', not 'numan'. gitconfig's allowedSignersFile is the"
+    warn "   absolute path /home/numan/.ssh/allowed_signers. After bootstrap, run:"
+    warn "     git config --global gpg.ssh.allowedSignersFile \"\$HOME/.ssh/allowed_signers\""
+    warned=1
+  fi
+  if [ "$HOME" != "/home/numan" ]; then
+    warn "\$HOME is '$HOME' (not /home/numan) — double-check the gitconfig signers path above."
+    warned=1
+  fi
+
+  if [ "$warned" = 1 ]; then
+    printf '\n'
+    read -r -p "Warnings above. Continue anyway? [y/N] " reply
+    case "$reply" in [yY]*) ;; *) echo "Aborted."; exit 1 ;; esac
+  fi
+}
+
+# ---------------------------------------------------------------------------
 # 1. Third-party apt repositories + keys
 # ---------------------------------------------------------------------------
 add_repos() {
@@ -175,6 +235,7 @@ restore_ptyxis() {
 }
 
 main() {
+  preflight
   add_repos
   install_packages
   install_prompt_and_font

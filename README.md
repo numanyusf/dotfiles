@@ -32,6 +32,7 @@ It does **not** do the system-level security setup (LUKS/TPM2 unlock, YubiKey ta
 - `packages.txt` — apt package manifest installed by `bootstrap.sh`
 - `scripts/remove-luks-pin.sh` — re-bind TPM2 to LUKS after a firmware/PCR-7 change (see the doc)
 - `docs/system-setup.md` — LUKS+TPM2 unlock, YubiKey PAM, hardware quirks, backup checklist
+- `docs/oh-my-posh-portable.md` — standalone handout: replicate just the prompt on any distro (Arch/Fedora/…), terminal, and shell
 
 ## Dependencies
 

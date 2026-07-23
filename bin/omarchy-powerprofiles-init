@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# Override of omarchy's power init. Omarchy's version sets `performance`
+# whenever on AC, which flips the profile to performance for a moment at
+# login before anything corrects it. We always want balanced by default.
+# Manual switching stays available via Fn+Q (firmware/ACPI, independent of
+# this script). This wins over ~/.local/share/omarchy/bin via PATH order
+# set in ~/.config/uwsm/env.
+powerprofilesctl set balanced

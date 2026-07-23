@@ -10,6 +10,10 @@ source ~/.local/share/omarchy/default/bash/rc
 # Make an alias for invoking commands you use constantly
 # alias p='python'
 
+# Silence starship's harmless "git timed out" warning on the first prompt
+# after boot (cold FS cache makes the first git call exceed command_timeout).
+export STARSHIP_LOG=error
+
 export SSH_AUTH_SOCK="$HOME/.1password/agent.sock"
 
 . "$HOME/.local/share/../bin/env"

@@ -1,0 +1,13 @@
+# 1Password SSH agent config — vaults whose SSH keys are exposed to the
+# agent (for auth) and to op-ssh-sign (for git commit signing).
+# Order = the order keys are offered during SSH authentication.
+# Symlinked to ~/.config/1Password/ssh/agent.toml by bootstrap.sh.
+
+[[ssh-keys]]
+vault = "Private"
+
+[[ssh-keys]]
+vault = "Work"
+
+[[ssh-keys]]
+vault = "Development"

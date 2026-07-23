@@ -1,0 +1,49 @@
+# apt packages to install on a fresh Ubuntu (GNOME) setup.
+# One package per line. Blank lines and # comments are ignored.
+# Base ubuntu-desktop / ubuntu-minimal packages are NOT listed — they ship with the OS.
+# Third-party-repo packages (1password, code, firefox, eduvpn) are handled
+# separately by bootstrap.sh, which adds their apt repos first.
+
+# --- Core CLI / build ---
+curl
+wget
+git
+gh
+build-essential
+apt-transport-https
+lm-sensors
+
+# --- Shell / terminal experience ---
+eza          # ls replacement with Nerd Font icons
+vivid        # generates LS_COLORS (only needed to regenerate ls_colors)
+tmux
+wl-clipboard # tmux/nvim clipboard on Wayland
+
+# --- Editor: Neovim (LazyVim) toolchain ---
+neovim
+ripgrep
+fd-find
+python3-pip
+python3-venv
+python3-pynvim
+nodejs
+npm
+
+# --- Disk encryption (LUKS + TPM2) ---
+# See docs/system-setup.md — these are needed for the TPM2 auto-unlock to work.
+cryptsetup
+lvm2
+tpm2-tools
+
+# --- YubiKey (FIDO2 tap-to-sudo / login) ---
+# See docs/system-setup.md for the PAM wiring.
+yubikey-manager
+yubikey-personalization
+libpam-u2f
+pamtester      # to validate PAM stacks without logging out
+pcscd
+
+# --- NVIDIA (machine-specific: Legion S7, RTX 3060 Mobile) ---
+# Prefer `sudo ubuntu-drivers install` to auto-pick the recommended driver.
+# The pinned version at last setup was nvidia-driver-595-open. Uncomment to force it:
+# nvidia-driver-595-open

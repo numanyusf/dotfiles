@@ -7,12 +7,11 @@ SUBSYSTEM=="power_supply", ATTR{type}=="Mains", RUN+="/usr/bin/systemd-run --no-
 SUBSYSTEM=="power_supply", ATTR{type}=="USB", RUN+="/usr/bin/systemd-run --no-block --collect --property=After=power-profiles-daemon.service /usr/bin/powerprofilesctl set balanced"
 EOF
 
-# systemd service for boot-time default
+# systemd service for boot-time default (WantedBy=graphical.target avoids ordering cycle with multi-user.target)
 sudo tee /etc/systemd/system/power-profile-balanced.service > /dev/null << 'EOF'
 [Unit]
 Description=Set balanced power profile at startup
 After=power-profiles-daemon.service
-Requires=power-profiles-daemon.service
 
 [Service]
 Type=oneshot
@@ -20,9 +19,10 @@ ExecStart=/usr/bin/powerprofilesctl set balanced
 RemainAfterExit=yes
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=graphical.target
 EOF
 
+sudo systemctl daemon-reload
 sudo systemctl enable --now power-profile-balanced.service
 sudo udevadm control --reload-rules
 powerprofilesctl set balanced

@@ -4,7 +4,6 @@
 # udev rule for plug/unplug events
 sudo tee /etc/udev/rules.d/99-power-profile.rules > /dev/null << 'EOF'
 SUBSYSTEM=="power_supply", ATTR{type}=="Mains", RUN+="/usr/bin/systemd-run --no-block --collect --property=After=power-profiles-daemon.service /usr/bin/powerprofilesctl set balanced"
-SUBSYSTEM=="power_supply", ATTR{type}=="USB", RUN+="/usr/bin/systemd-run --no-block --collect --property=After=power-profiles-daemon.service /usr/bin/powerprofilesctl set balanced"
 EOF
 
 # systemd service for boot-time default (WantedBy=graphical.target avoids ordering cycle with multi-user.target)

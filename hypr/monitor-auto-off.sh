@@ -1,6 +1,10 @@
 #!/bin/bash
 SOCKET="$XDG_RUNTIME_DIR/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock"
 
+# Disable internal display at startup if external monitor already connected
+sleep 2
+omarchy-hyprland-monitor-internal off 2>/dev/null
+
 socat -U - "UNIX-CONNECT:$SOCKET" | while read -r event; do
   case "$event" in
     monitoradded\>\>*|monitoraddedv2\>\>*)

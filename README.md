@@ -18,6 +18,8 @@ cd ~/.dotfiles && git checkout ubuntu
 
 It does **not** do the system-level security setup (LUKS/TPM2 unlock, YubiKey tap-to-login) — those touch `/etc`, need physical touches or secrets, and are documented step-by-step in **[`docs/system-setup.md`](docs/system-setup.md)**. Do those after bootstrap; the script prints a reminder.
 
+**For the full end-to-end walkthrough** — fresh install choices, firmware, bootstrap, 1Password, git signing, LUKS/TPM, YubiKey, and a final verification checklist, all in order — see **[`docs/ubuntu-setup-guide.md`](docs/ubuntu-setup-guide.md)**.
+
 ## Included configs
 
 - `bashrc` — Bash config: inits **oh-my-posh**, loads `ls_colors`, and aliases `ls`→**eza** (with Nerd Font icons)
@@ -31,6 +33,7 @@ It does **not** do the system-level security setup (LUKS/TPM2 unlock, YubiKey ta
 - `tmux/` — tmux config with TPM plugins (prefix `C-a`)
 - `packages.txt` — apt package manifest installed by `bootstrap.sh`
 - `scripts/remove-luks-pin.sh` — re-bind TPM2 to LUKS after a firmware/PCR-7 change (see the doc)
+- `docs/ubuntu-setup-guide.md` — **full end-to-end runbook** for this machine (install → verified), stitching bootstrap + the docs below in order
 - `docs/system-setup.md` — LUKS+TPM2 unlock, YubiKey PAM, hardware quirks, backup checklist
 - `docs/oh-my-posh-portable.md` — standalone handout: replicate just the prompt on any distro (Arch/Fedora/…), terminal, and shell
 

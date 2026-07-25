@@ -34,7 +34,7 @@ show_about() {
 }
 
 # ── Extended AI install menu ─────────────────────────────────────────
-# Adds terminal AI coding agents + Cursor to Install → AI, installed as
+# Adds terminal AI coding agents to Install → AI, installed as
 # AUR/repo packages via Omarchy's own `install` helper (omarchy-pkg-add).
 # Because they're real packages, they also show up in Remove → Package.
 # Overrides the upstream show_install_ai_menu(); this file is sourced
@@ -46,17 +46,17 @@ show_install_ai_menu() {
       echo ollama
   )
 
-  case $(menu "Install" "󱚤  Claude Code\n󱚤  OpenAI Codex\n  Gemini CLI\n󱚤  opencode\n  Copilot CLI\n󱚤  Cursor\n  Dictation\n󱚤  LM Studio\n󱚤  Ollama\n󱚤  Crush") in
-  *"Claude Code"*) install "Claude Code" "claude-code" ;;
-  *Codex*) install "OpenAI Codex" "openai-codex-bin" ;;
-  *Gemini*) install "Gemini CLI" "gemini-cli" ;;
-  *opencode*) install "opencode" "opencode" ;;
+  case $(menu "Install" "󱚤  Claude Code CLI\n󱚤  Cursor CLI\n󱚤  OpenAI Codex CLI\n  GitHub Copilot CLI\n  Gemini CLI\n󱚤  Opencode CLI\n󱚤  Crush CLI\n󱚤  LM Studio\n󱚤  Ollama\n  Voice Dictation") in
+  *"Claude Code"*) install "Claude Code CLI" "claude-code" ;;
+  *Cursor*) install "Cursor CLI" "cursor-cli" ;;
+  *Codex*) install "OpenAI Codex CLI" "openai-codex-bin" ;;
   *Copilot*) install "GitHub Copilot CLI" "copilot-cli" ;;
-  *Cursor*) install "Cursor" "cursor-bin" ;;
-  *Dictation*) present_terminal omarchy-voxtype-install ;;
+  *Gemini*) install "Gemini CLI" "gemini-cli" ;;
+  *Opencode*) install "Opencode CLI" "opencode" ;;
+  *Crush*) install "Crush CLI" "crush-bin" ;;
   *Studio*) install "LM Studio" "lmstudio-bin" ;;
   *Ollama*) install "Ollama" $ollama_pkg ;;
-  *Crush*) install "Crush" "crush-bin" ;;
+  *Dictation*) present_terminal omarchy-voxtype-install ;;
   *) show_install_menu ;;
   esac
 }

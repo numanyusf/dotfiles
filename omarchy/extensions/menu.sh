@@ -46,9 +46,11 @@ show_install_ai_menu() {
       echo ollama
   )
 
-  case $(menu "Install" "󱚤  Claude Code CLI\n󱚤  Cursor CLI\n󱚤  OpenAI Codex CLI\n  GitHub Copilot CLI\n  Gemini CLI\n󱚤  Opencode CLI\n󱚤  Crush CLI\n󱚤  LM Studio\n󱚤  Ollama\n  Voice Dictation") in
+  case $(menu "Install" "󱚤  Claude Code CLI\n󰍩  Claude Desktop\n󱚤  Cursor CLI\n󰍩  Cursor Desktop\n󱚤  OpenAI Codex CLI\n  GitHub Copilot CLI\n  Gemini CLI\n󱚤  Opencode CLI\n󱚤  Crush CLI\n󱚤  LM Studio\n󱚤  Ollama\n  Voice Dictation") in
+  *"Claude Desktop"*) install "Claude Desktop" "claude-desktop-bin" ;;
   *"Claude Code"*) install "Claude Code CLI" "claude-code" ;;
-  *Cursor*) install "Cursor CLI" "cursor-cli" ;;
+  *"Cursor Desktop"*) install "Cursor Desktop" "cursor-bin" ;;
+  *"Cursor CLI"*) install "Cursor CLI" "cursor-cli" ;;
   *Codex*) install "OpenAI Codex CLI" "openai-codex-bin" ;;
   *Copilot*) install "GitHub Copilot CLI" "copilot-cli" ;;
   *Gemini*) install "Gemini CLI" "gemini-cli" ;;

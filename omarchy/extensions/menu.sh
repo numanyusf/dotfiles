@@ -19,6 +19,20 @@
 #   exec omarchy-launch-or-focus-tui "zsh -c 'fastfetch; read -k 1'"
 # }
 
+# ── About uses a smaller font ────────────────────────────────────────
+# The fastfetch About layout is up to ~122 columns wide on this machine
+# (long CPU/GPU strings) and is designed for Omarchy's default terminal
+# font size (9). Our Alacritty font is 11, so in the fixed 875x600 About
+# window the layout wraps/misaligns. Launch it with font size 9 (leaving
+# the normal terminal at 11) and a dedicated class (org.omarchy.about) so
+# our own float/center/size rules in ~/.config/hypr/hyprland.conf apply
+# without competing with Omarchy's floating-window tag size (875x600).
+show_about() {
+  setsid uwsm-app -- alacritty --class org.omarchy.about -o font.size=9 \
+    -o window.dynamic_padding=true \
+    -e bash -c 'fastfetch; read -n 1 -s' >/dev/null 2>&1 &
+}
+
 # ── Extended AI install menu ─────────────────────────────────────────
 # Adds terminal AI coding agents + Cursor to Install → AI, installed as
 # AUR/repo packages via Omarchy's own `install` helper (omarchy-pkg-add).

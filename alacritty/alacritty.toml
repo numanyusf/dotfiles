@@ -6,6 +6,23 @@ TERM = "xterm-256color"
 [terminal]
 osc52 = "CopyPaste"
 
+[selection]
+save_to_clipboard = true
+
+[mouse]
+# Hide the mouse cursor while typing.
+hide_when_typing = true
+# Note: single/double/triple click and drag-select are built-in and not
+# configurable; Ctrl+click on a URL opens it via the default hint.
+bindings = [
+# Right-click pastes the clipboard (selections land there via save_to_clipboard).
+{ mouse = "Right", action = "Paste" },
+# Shift+Right pastes the primary/selection buffer instead.
+{ mouse = "Right", mods = "Shift", action = "PasteSelection" },
+# Middle-click pastes the primary/selection buffer (explicit default).
+{ mouse = "Middle", action = "PasteSelection" }
+]
+
 [font]
 normal = { family = "JetBrainsMono Nerd Font", style = "Regular" }
 bold = { family = "JetBrainsMono Nerd Font", style = "Bold" }

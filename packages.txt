@@ -1,0 +1,52 @@
+# apt packages to install on a fresh Ubuntu (GNOME) setup.
+# One package per line. Blank lines and # comments are ignored.
+# Base ubuntu-desktop / ubuntu-minimal packages are NOT listed — they ship with the OS.
+# Third-party-repo packages (1password, code, firefox, eduvpn) are handled
+# separately by bootstrap.sh, which adds their apt repos first.
+
+# --- Core CLI / build ---
+curl
+wget
+git
+gh
+build-essential
+apt-transport-https
+lm-sensors
+
+# --- Shell / terminal experience ---
+eza          # ls replacement with Nerd Font icons
+vivid        # generates LS_COLORS (only needed to regenerate ls_colors)
+fzf          # fuzzy finder — Ctrl-R history, Ctrl-T files, Alt-C cd (wired in bashrc)
+wl-clipboard # clipboard access from the CLI on Wayland
+
+# NOTE: neovim and tmux were removed on 2026-07-28 (along with python3-pynvim
+# and tree-sitter-cli, which are only useful with Neovim). The configs they
+# used were inherited rather than built for this machine. Add them back here
+# when the editor/multiplexer setup is redone from scratch.
+
+# --- CLI tooling ---
+ripgrep
+fd-find
+lazygit          # git TUI
+python3-pip
+python3-venv
+nodejs
+npm
+
+# --- Disk encryption (LUKS + LVM) ---
+cryptsetup
+lvm2
+
+# --- YubiKey (FIDO2 for LUKS unlock only — tap-to-sudo/login tried, reverted) ---
+# See docs/system-setup.md §3 for why.
+yubikey-manager
+yubikey-personalization
+libpam-u2f
+pamtester      # to validate PAM stacks without logging out
+pcscd
+fido2-tools    # fido2-token CLI — inspecting/managing the enrolled LUKS credentials
+
+# --- NVIDIA (machine-specific: Legion S7, RTX 3060 Mobile) ---
+# Prefer `sudo ubuntu-drivers install` to auto-pick the recommended driver.
+# The pinned version at last setup was nvidia-driver-595-open. Uncomment to force it:
+# nvidia-driver-595-open

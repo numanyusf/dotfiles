@@ -187,7 +187,17 @@ install_prompt_and_font() {
 }
 
 # ---------------------------------------------------------------------------
-# 4. Symlinks
+# 4. uv (Python package/venv manager)
+# ---------------------------------------------------------------------------
+install_uv() {
+  if ! command -v uv >/dev/null 2>&1 && [ ! -x "$HOME/.local/bin/uv" ]; then
+    log "Installing uv to ~/.local/bin"
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+  fi
+}
+
+# ---------------------------------------------------------------------------
+# 5. Symlinks
 # ---------------------------------------------------------------------------
 link() {  # link <repo-relative-src> <dest>
   local src="$DOTFILES/$1" dest="$2"
@@ -201,6 +211,8 @@ make_symlinks() {
   link bashrc              "$HOME/.bashrc"
   link gitconfig           "$HOME/.gitconfig"
   link oh-my-posh          "$HOME/.config/oh-my-posh"
+  link nvim                "$HOME/.config/nvim"
+  link tmux/tmux.conf      "$HOME/.tmux.conf"
   link 1password/agent.toml "$HOME/.config/1Password/ssh/agent.toml"
 
   # ssh needs strict perms; symlink the individual files, not the dir
@@ -212,7 +224,7 @@ make_symlinks() {
 }
 
 # ---------------------------------------------------------------------------
-# 5. Ptyxis terminal settings
+# 6. Ptyxis terminal settings
 # ---------------------------------------------------------------------------
 restore_ptyxis() {
   # The custom palette MUST be installed before the dconf load, otherwise the
@@ -233,6 +245,7 @@ main() {
   add_repos
   install_packages
   install_prompt_and_font
+  install_uv
   make_symlinks
   restore_ptyxis
 
@@ -254,9 +267,8 @@ main() {
  Then open a new terminal (oh-my-posh + eza) and confirm
  `git log --show-signature` verifies.
 
- NOTE: no editor or terminal multiplexer is configured. Neovim and tmux were
- removed on 2026-07-28 — the inherited configs were never built for this
- machine. To be set up fresh at a later stage.
+ Neovim is set up fresh (LazyVim starter) — first launch installs plugins.
+ tmux is set up fresh too, themed to match the Ptyxis terminal palette.
 ============================================================================
 EOF
 }

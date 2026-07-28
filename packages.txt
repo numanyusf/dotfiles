@@ -19,10 +19,12 @@ vivid        # generates LS_COLORS (only needed to regenerate ls_colors)
 fzf          # fuzzy finder — Ctrl-R history, Ctrl-T files, Alt-C cd (wired in bashrc)
 wl-clipboard # clipboard access from the CLI on Wayland
 
-# NOTE: neovim and tmux were removed on 2026-07-28 (along with python3-pynvim
-# and tree-sitter-cli, which are only useful with Neovim). The configs they
-# used were inherited rather than built for this machine. Add them back here
-# when the editor/multiplexer setup is redone from scratch.
+# --- Editor / multiplexer ---
+neovim       # LazyVim starter — see nvim/ (config lives in this repo, symlinked)
+tmux         # see tmux/tmux.conf (config lives in this repo, symlinked)
+
+# NOTE: both were removed on 2026-07-28 (inherited configs, never built for
+# this machine) and redone from scratch the same day.
 
 # --- CLI tooling ---
 ripgrep

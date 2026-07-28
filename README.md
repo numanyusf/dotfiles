@@ -46,9 +46,10 @@ It does **not** do the system-level security setup (LUKS/TPM2 unlock, YubiKey ta
 - **vivid** — `sudo apt install vivid` (only needed to *regenerate* `ls_colors`; the committed file works standalone)
 - **MesloLGM Nerd Font** — installed under `~/.local/share/fonts/Meslo/`
 
-> **No editor or multiplexer here yet.** Neovim and tmux were removed on
-> 2026-07-28 — their configs were inherited rather than built for this machine
-> (see `docs/ubuntu-setup-guide.md`). To be set up from scratch later.
+> **Neovim** uses the [LazyVim](https://www.lazyvim.org/) starter as a base
+> (`nvim/`, symlinked to `~/.config/nvim`), set up fresh for this machine on
+> 2026-07-28. **tmux** (`tmux/tmux.conf`, symlinked to `~/.tmux.conf`) was set
+> up fresh the same day too, themed to match the Ptyxis terminal palette.
 
 ## Manual setup (what `bootstrap.sh` automates)
 

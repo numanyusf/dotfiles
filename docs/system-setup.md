@@ -97,24 +97,26 @@ Also run `sudo fwupdmgr update` on a fresh install to apply UEFI db/dbx updates
 
 ---
 
-## 3. YubiKey — FIDO2 for LUKS + tap-to-sudo (login stays password-only)
+## 3. YubiKey — FIDO2 for LUKS, tap-to-sudo, and 1Password unlock (login stays password-only)
 
 Two keys: **primary** = Security Key C NFC (FIDO2/U2F only, has a FIDO2 PIN);
 **backup** = YubiKey 5C. Tooling (via `bootstrap.sh`): `libpam-u2f`,
 `yubikey-manager`, `pcscd`, `pamtester`.
 
-**Current state:** keys are wired into LUKS (§2) and `sudo`, but **not**
-`gdm-password`. Tap-to-login was tried too (§3b below) and worked, but
-`pam_u2f` as `sufficient` *before* `@include common-auth` means the real
-password never reaches `pam_unix` — so the GNOME login keyring (which
-auto-unlocks using the PAM-captured login password) stayed locked every
-session. That surfaced as a recurring "unlock keyring" popup and broke apps
-that read secrets from it (e.g. Claude Code's stored OAuth token). Since
-`sudo` doesn't touch the keyring, tap-to-sudo has no such downside — only
-`gdm-password` was left reverted to its `.pre-u2f.bak` (password-only login
-and lock screen; keyring auto-unlocks normally). `sudo`'s `pam_u2f` line is
-`sufficient`, so it still falls back to your password if the key isn't
-present — no lockout risk.
+**Current state:** keys are wired into LUKS (§2), `sudo`, and `polkit` (§3c —
+powers 1Password's "Unlock using system authentication"), but **not**
+`gdm-password`. Tap-to-login was tried **twice** (most recently 2026-07-28)
+and both times worked for the login prompt itself, but `pam_u2f` as
+`sufficient` *before* `@include common-auth` means the real password never
+reaches `pam_unix` — so the GNOME login keyring (which auto-unlocks using the
+PAM-captured login password) stayed locked every session. That surfaced as a
+recurring "unlock keyring" popup and broke apps that read secrets from it
+(e.g. Claude Code's stored OAuth token). Since `sudo` and `polkit` don't touch
+the login keyring, tap-to-sudo and tap-to-unlock-1Password have no such
+downside — only `gdm-password` was left reverted to its `.pre-u2f.bak`
+(password-only login and lock screen; keyring auto-unlocks normally). The
+`sudo` and `polkit-1` `pam_u2f` lines are both `sufficient`, so they still
+fall back to your password if the key isn't present — no lockout risk.
 
 ### 3a. Enroll both keys (needs each key physically present + PIN + touch)
 
@@ -165,8 +167,59 @@ authenticated").
   tradeoff here since the disk is already LUKS+FIDO2 encrypted at rest.
 - **Recovery if the greeter breaks:** VT `Ctrl+Alt+F3` uses `/etc/pam.d/login`
   (untouched) → log in with password → restore the `.pre-u2f.bak` file.
-- **1Password FIDO2:** register both keys as security keys (two-factor) in the
-  1Password web UI — done in-app, nothing on disk.
+- **1Password account 2FA:** registering the keys as security keys (two-factor)
+  in the 1Password web UI is a *separate* feature from tap-to-unlock below —
+  that's for signing in to the account itself, not unlocking the desktop app.
+  Done in-app, nothing on disk.
+
+### 3c. 1Password "Unlock using system authentication" (via polkit)
+
+This toggle in 1Password's Settings → Security calls polkit
+(`com.1password.1Password.unlock`), which runs whatever PAM stack
+`/etc/pam.d/polkit-1` defines — completely separate from `gdm-password`, `sudo`,
+or any "OS default unlock method". No `polkit-1` file existed before, so
+polkit fell back to `/etc/pam.d/other` (password only) and the toggle just
+looked like it silently ignored the key.
+
+**Symptom when broken:** the system-auth prompt fails almost instantly (no
+time to touch the key or type a password) — `journalctl` shows
+`pam_unix(polkit-1:auth): conversation failed` and 1Password logs
+`SystemAuthError(UserCancel)`. This is a real bug in `polkitd` ≥127
+(tracked at [polkit-org/polkit#622](https://github.com/polkit-org/polkit/issues/622)):
+the `polkit-agent-helper@.service` unit sandboxes the helper process
+(`ProtectHome=yes`, `PrivateDevices=yes`, a strict `DeviceAllow=/dev/null rw`)
+so `pam_u2f` can't reach `/dev/hidraw*` or read `~/.config/Yubico/u2f_keys`,
+*and* `StandardError` defaults to sharing the same socket used for the PAM
+conversation, so any stderr output from the PAM module corrupts it.
+
+**Fix — two files:**
+
+```bash
+# 1. New PAM stack for polkit (didn't exist before)
+sudo tee /etc/pam.d/polkit-1 <<'EOF'
+#%PAM-1.0
+auth       sufficient      pam_u2f.so openasuser cue
+@include common-auth
+@include common-account
+@include common-session
+EOF
+
+# 2. Loosen the sandbox for just this one short-lived helper process
+sudo mkdir -p /etc/systemd/system/polkit-agent-helper@.service.d
+sudo tee /etc/systemd/system/polkit-agent-helper@.service.d/override.conf <<'EOF'
+[Service]
+StandardError=journal
+PrivateDevices=no
+DeviceAllow=/dev/urandom r
+DeviceAllow=char-hidraw rw
+ProtectHome=no
+EOF
+sudo systemctl daemon-reload
+```
+
+**Validate:** lock 1Password, choose "Unlock using system authentication",
+touch the key. `journalctl` should show the helper start and exit cleanly
+with no `conversation failed` / `SystemAuthError` lines.
 
 ---
 

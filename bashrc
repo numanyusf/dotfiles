@@ -158,3 +158,6 @@ bind '"\eOB": history-search-forward'
 # --- end history prefix search ---
 # --- end prompt ---
 [ -s "/opt/adguard-cli/bash-completion.sh" ] && \. "/opt/adguard-cli/bash-completion.sh"
+
+# Added by LM Studio CLI tool (lms)
+export PATH="$PATH:/home/numan/.lmstudio/bin"

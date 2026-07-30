@@ -1,0 +1,4 @@
+
+# Graphify (per-repo; never commit from dotfiles)
+graphify-out/
+.graphifyignore

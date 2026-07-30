@@ -213,6 +213,7 @@ make_symlinks() {
   link oh-my-posh          "$HOME/.config/oh-my-posh"
   link nvim                "$HOME/.config/nvim"
   link tmux/tmux.conf      "$HOME/.tmux.conf"
+  link vscode/settings.json "$HOME/.config/Code/User/settings.json"
   link 1password/agent.toml "$HOME/.config/1Password/ssh/agent.toml"
 
   # ssh needs strict perms; symlink the individual files, not the dir

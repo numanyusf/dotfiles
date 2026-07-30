@@ -248,7 +248,9 @@ with no `conversation failed` / `SystemAuthError` lines.
 
 - **Node via nvm:** `~/.bashrc` has an NVM load block ready. Install nvm, then
   `nvm install <version>` + `nvm install --lts`.
-- **Docker:** install, then restore `~/.docker/config.json`.
+- **Docker:** engine install + the container stack (Traefik, Authelia, Homarr,
+  Portainer, etc.) are set up and tracked separately in the
+  [`numanyusf/homelab`](https://github.com/numanyusf/homelab) repo, not here.
 - VS Code is covered by `bootstrap.sh`. (Neovim/tmux were removed 2026-07-28.)
 
 ---

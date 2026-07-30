@@ -219,7 +219,9 @@ Note: editing the `.omp.json`? run `oh-my-posh cache clear` after.
 - **Node via nvm:** `~/.bashrc` has an NVM load block ready. Install nvm, then
   `nvm install --lts` (and any specific version you need). *(apt `nodejs` is also
   present as general CLI tooling.)*
-- **Docker:** install, then restore `~/.docker/config.json`.
+- **Docker:** engine install + the container stack (Traefik, Authelia, Homarr,
+  Portainer, etc.) are set up and tracked separately in the
+  [`numanyusf/homelab`](https://github.com/numanyusf/homelab) repo, not here.
 - Other runtimes (Rust, Go, Java, Python `uv`) — add as needed; the oh-my-posh
   language segments light up automatically once each runtime is installed.
 

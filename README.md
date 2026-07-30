@@ -32,6 +32,7 @@ It does **not** do the system-level security setup (LUKS/TPM2 unlock, YubiKey ta
 - `ptyxis/one-warm.palette` — One Dark base, `UseSystemAccent=true` (window
   chrome follows the GNOME accent — orange — instead of One Dark's blue
   `#61AFEF`), plus a warmer off-white default text colour (`#D6D2C4`)
+- `vscode/settings.json` — VS Code user settings → `~/.config/Code/User/settings.json`
 - `packages.txt` — apt package manifest installed by `bootstrap.sh`
 - `scripts/remove-luks-pin.sh` — re-bind TPM2 to LUKS after a firmware/PCR-7 change (see the doc)
 - `docs/ubuntu-setup-guide.md` — **full end-to-end runbook** for this machine (install → verified), stitching bootstrap + the docs below in order
@@ -62,6 +63,7 @@ ln -sfn ~/.dotfiles/oh-my-posh          ~/.config/oh-my-posh
 ln -sfn ~/.dotfiles/ssh/config          ~/.ssh/config
 ln -sfn ~/.dotfiles/ssh/allowed_signers ~/.ssh/allowed_signers
 ln -sfn ~/.dotfiles/1password/agent.toml ~/.config/1Password/ssh/agent.toml
+ln -sfn ~/.dotfiles/vscode/settings.json ~/.config/Code/User/settings.json
 ```
 
 (`ls_colors` needs no symlink — `bashrc` reads `~/.dotfiles/ls_colors` directly. Regenerate with `vivid generate one-dark | sed 's/di=[^:]*/di=0;38;2;229;192;123/' > ~/.dotfiles/ls_colors`.)

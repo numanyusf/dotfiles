@@ -1,0 +1,61 @@
+---
+description: Prefer Graphify for code discovery when a project graph exists
+alwaysApply: true
+---
+
+# Graphify (when present)
+
+## When this applies
+
+If the current workspace has `graphify-out/graph.json`, treat Graphify as the
+default for **codebase / architecture / “where is X” / “what connects to Y”**
+work. If that file is missing, do **not** force Graphify — use normal search
+(`Grep` / `Glob` / `Read`) and optionally offer to build a graph with
+`graphify update .` or `graphify extract . --code-only`.
+
+CLI is machine-global (`graphify` on PATH). Graphs are **per project**.
+
+## When a graph exists — Graphify first
+
+Do **not** use Grep (or Glob-as-search) for symbol/architecture discovery when
+Graphify can answer:
+
+- `graphify query "<question>"` — scoped subgraph for a plain-language question
+- `graphify path "<A>" "<B>"` — dependency path between two symbols
+- `graphify explain "<concept>"` — node + neighbors
+- `graphify god-nodes` — architectural hubs
+- `graphify affected "<X>"` — blast radius / dependents
+
+This applies to you and every subagent. Put these instructions in subagent
+prompts that explore code.
+
+Prefer:
+
+1. `graphify query` / `path` / `explain` / `affected`
+2. `Read` only the specific files/lines the graph pointed to
+3. After code edits in a graph’d repo: `graphify update .` (AST-only, no API cost)
+
+If `graphify-out/wiki/index.md` exists, navigate that before raw files. Use
+`graphify-out/GRAPH_REPORT.md` only for broad architecture review when
+query/path/explain are not enough.
+
+## When Grep is allowed (even if a graph exists)
+
+1. **Literal / non-symbol text** — exact strings, error messages, CSS classes,
+   env var names, comments, copy, regex across configs
+2. **Graph miss** — you already ran a relevant `graphify query`/`explain`/`path`
+   and it returned nothing useful or missed the symbol
+3. **Non-code / tooling** — `.gitignore`, git status, lockfiles, generated
+   artifacts, env examples, docs-only wording
+
+If unsure: **run Graphify first** when `graphify-out/graph.json` exists. If the
+graph answers, stop — do not also Grep “to confirm” unless verifying a literal
+string change.
+
+## New repo (no graph yet)
+
+```bash
+graphify update .    # or: graphify extract . --code-only
+# optional agent skill copy:
+graphify install --platform cursor
+```

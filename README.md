@@ -48,8 +48,12 @@ It does **not** do the system-level security setup (LUKS/TPM2 unlock, YubiKey ta
 - `agents/mcp-servers.sh` — registers the same MCP set with Claude Code at **user** scope (available in every Claude project): Figma, Markitdown, 1Password, Vercel. Not Listick-specific. Not run by `bootstrap.sh` — run manually, then `claude` → `/mcp` for OAuth. Cursor uses `cursor-mcp.json` instead of this script.
 - **Graphify** (`uv tool install graphifyy`, installed by `bootstrap.sh`) — codebase
   knowledge-graph CLI (`github.com/Graphify-Labs/graphify`); the CLI install is global, but
-  wiring it into a project (`graphify install`, then `/graphify .`) is per-project and done
-  manually, not scripted here
+  each repo builds its own `graphify-out/` via `graphify update .` (or `extract`). Agent habit
+  is central: `agents/cursor-graphify.mdc` → `~/.cursor/rules/graphify.mdc` (use Graphify first
+  **only when** `graphify-out/graph.json` exists). Optional per-tool skill copy:
+  `graphify install --platform cursor`
+- `agents/cursor-graphify.mdc` — Cursor alwaysApply Graphify rule (guarded on graph presence)
+  → `~/.cursor/rules/graphify.mdc`
 - `agents/caveman-install.sh` — installs **caveman** (`github.com/JuliusBrussee/caveman`),
   an output-compression skill/plugin, for Claude Code (plugin, compression **on by default**
   from message one), Cursor, and Continue (both via `npx skills add ... -g`, global scope).
@@ -115,6 +119,7 @@ ln -sfn ~/.dotfiles/vscode/settings.json ~/.config/Code/User/settings.json
 ln -sfn ~/.dotfiles/agents/AGENTS.md ~/.claude/CLAUDE.md
 ln -sfn ~/.dotfiles/agents/claude-settings.json ~/.claude/settings.json
 ln -sfn ~/.dotfiles/agents/cursor-general.mdc ~/.cursor/rules/general.mdc
+ln -sfn ~/.dotfiles/agents/cursor-graphify.mdc ~/.cursor/rules/graphify.mdc
 ln -sfn ~/.dotfiles/agents/cursor-mcp.json ~/.cursor/mcp.json
 ln -sfn ~/.dotfiles/agents/cursor-hooks.json ~/.cursor/hooks.json
 ln -sfn ~/.dotfiles/agents/hooks/block-dangerous-git.sh ~/.claude/hooks/block-dangerous-git.sh

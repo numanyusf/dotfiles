@@ -69,3 +69,16 @@ Do not print values returned from them (especially 1Password).
 Auth is per client (`cursor-agent mcp login <server>`, or Claude `/mcp`). Approvals persist across sessions — do not re-enable every time. If Cursor `mcp enable` fails with global-only config, symlink the central `cursor-mcp.json` into `<project>/.cursor/mcp.json`.
 
 Destructive git (`git push`, `reset --hard`, `clean -f`, `branch -D`, etc.) is **hard-blocked** for both Cursor (`beforeShellExecution`) and Claude Code (`PreToolUse`) via `~/.dotfiles/agents/hooks/block-dangerous-git.sh`. Run those yourself in a real terminal when you mean them.
+
+## Graphify (when a project has a graph)
+
+CLI is global (`graphify`). Graphs live per repo in `graphify-out/`.
+
+- If `graphify-out/graph.json` exists: prefer `graphify query` / `path` / `explain` /
+  `affected` / `god-nodes` for symbol and architecture discovery before Grep.
+- If missing: use normal search; build with `graphify update .` (or
+  `graphify extract . --code-only`) when you want a graph.
+- After substantive code edits in a graph’d repo: `graphify update .`.
+
+Cursor also loads `agents/cursor-graphify.mdc` → `~/.cursor/rules/graphify.mdc`
+(`alwaysApply`, guarded on graph presence).

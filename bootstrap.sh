@@ -229,6 +229,7 @@ make_symlinks() {
   link agents/AGENTS.md          "$HOME/.claude/CLAUDE.md"
   link agents/claude-settings.json "$HOME/.claude/settings.json"
   link agents/cursor-general.mdc "$HOME/.cursor/rules/general.mdc"
+  link agents/cursor-graphify.mdc "$HOME/.cursor/rules/graphify.mdc"
   link agents/cursor-mcp.json    "$HOME/.cursor/mcp.json"
   link agents/cursor-hooks.json  "$HOME/.cursor/hooks.json"
   link agents/hooks/block-dangerous-git.sh "$HOME/.claude/hooks/block-dangerous-git.sh"
@@ -304,10 +305,11 @@ main() {
    7. Paste agents/cursor-general.mdc's body into Cursor's Settings > Rules
                                           > User Rules (filesystem rules also
                                           live at ~/.cursor/rules/general.mdc)
-   8. `graphify install` (or /graphify . inside Claude Code/Cursor) per
-                                          project you want the knowledge
-                                          graph in — Graphify itself is
-                                          per-project, not global
+   8. `graphify update .` (or extract) per project you want a knowledge
+                                          graph in — CLI is global; graphs are
+                                          per-repo. Agent rule is already
+                                          global (cursor-graphify.mdc).
+                                          Optional: `graphify install --platform cursor`
    9. ./agents/caveman-install.sh        (output-compression skill for
                                           Claude Code/Cursor/Continue —
                                           on by default on Claude Code)

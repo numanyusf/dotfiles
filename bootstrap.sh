@@ -225,6 +225,17 @@ make_symlinks() {
 }
 
 # ---------------------------------------------------------------------------
+# 5b. VS Code extensions (theme referenced by vscode/settings.json)
+# ---------------------------------------------------------------------------
+install_vscode_extensions() {
+  if command -v code >/dev/null 2>&1; then
+    log "Installing VS Code extensions (One Dark Pro theme + Material Icon Theme)"
+    code --install-extension zhuangtongfa.material-theme --force >/dev/null
+    code --install-extension pkief.material-icon-theme --force >/dev/null
+  fi
+}
+
+# ---------------------------------------------------------------------------
 # 6. Ptyxis terminal settings
 # ---------------------------------------------------------------------------
 restore_ptyxis() {
@@ -248,6 +259,7 @@ main() {
   install_prompt_and_font
   install_uv
   make_symlinks
+  install_vscode_extensions
   restore_ptyxis
 
   cat <<'EOF'

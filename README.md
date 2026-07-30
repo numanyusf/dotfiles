@@ -32,7 +32,9 @@ It does **not** do the system-level security setup (LUKS/TPM2 unlock, YubiKey ta
 - `ptyxis/one-warm.palette` — One Dark base, `UseSystemAccent=true` (window
   chrome follows the GNOME accent — orange — instead of One Dark's blue
   `#61AFEF`), plus a warmer off-white default text colour (`#D6D2C4`)
-- `vscode/settings.json` — VS Code user settings → `~/.config/Code/User/settings.json`
+- `vscode/settings.json` — VS Code user settings → `~/.config/Code/User/settings.json`;
+  themed **One Dark Pro** + **Material Icon Theme** (installed by `bootstrap.sh`) to
+  match Ptyxis/nvim/tmux, font set to MesloLGM Nerd Font
 - `packages.txt` — apt package manifest installed by `bootstrap.sh`
 - `scripts/remove-luks-pin.sh` — re-bind TPM2 to LUKS after a firmware/PCR-7 change (see the doc)
 - `docs/ubuntu-setup-guide.md` — **full end-to-end runbook** for this machine (install → verified), stitching bootstrap + the docs below in order

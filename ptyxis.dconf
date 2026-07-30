@@ -7,5 +7,5 @@ use-system-font=false
 window-size=(uint32 250, uint32 39)
 
 [Profiles/42713f63ae208eb8e2201a6c6a5eba09]
-opacity=0.90000000000000002
+opacity=1.0
 palette='one-warm'

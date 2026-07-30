@@ -174,7 +174,7 @@ keyring workaround that would be needed.
 Open a **new** Ptyxis tab and you should see the themed prompt. What's in place:
 
 - **Ptyxis:** `MesloLGM Nerd Font 13` (the **non-Mono** variant — Mono shrinks the
-  prompt icons), **`one-warm`** palette, opacity `0.9`. Set via
+  prompt icons), **`one-warm`** palette, opacity `1.0`. Set via
   `ptyxis.dconf`. GNOME accent is Yaru **orange**, `prefer-dark`.
 - **`one-warm`** (`ptyxis/one-warm.palette`, copied to
   `~/.local/share/org.gnome.Ptyxis/palettes/` by `bootstrap.sh`) started as the

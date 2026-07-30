@@ -9,7 +9,7 @@ return {
     opts = {
       style = "dark",
       colors = {
-        bg0 = "#1E2127", -- terminal Background
+        bg0 = "#16191D", -- terminal Background
         fg = "#D6D2C4", -- terminal Foreground/Cursor
         black = "#000000", -- terminal Color0
         red = "#E06C75", -- terminal Color1

@@ -3,7 +3,17 @@
   "editor.fontFamily": "MesloLGM Nerd Font",
   "chat.mcp.gallery.enabled": true,
   "editor.fontSize": 16,
-  "workbench.colorTheme": "One Dark Pro",
   "workbench.iconTheme": "material-icon-theme",
-  "window.zoomLevel": 1
+  "window.zoomLevel": 1,
+  "workbench.colorCustomizations": {
+    "[One Dark Pro]": {
+      "editor.background": "#16191D",
+      "sideBar.background": "#16191D",
+      "activityBar.background": "#16191D",
+      "statusBar.background": "#16191D",
+      "titleBar.activeBackground": "#16191D",
+      "editorGroupHeader.tabsBackground": "#16191D"
+    }
+  },
+  "material-icon-theme.rootFolders.associations": {}
 }

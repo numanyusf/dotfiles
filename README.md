@@ -35,6 +35,52 @@ It does **not** do the system-level security setup (LUKS/TPM2 unlock, YubiKey ta
 - `vscode/settings.json` — VS Code user settings → `~/.config/Code/User/settings.json`;
   themed **One Dark Pro** + **Material Icon Theme** (installed by `bootstrap.sh`) to
   match Ptyxis/nvim/tmux, font set to MesloLGM Nerd Font
+- `agents/AGENTS.md` — general, tool-agnostic coding-agent rules (verification, git safety,
+  secrets handling, code-change scope) → symlinked to `~/.claude/CLAUDE.md` (Claude Code has
+  no native `AGENTS.md` support as of mid-2026, so `CLAUDE.md` is a symlink to it); other tools
+  (Cursor, Copilot, Codex CLI, Aider, …) read `AGENTS.md` natively from a project root
+- `agents/cursor-general.mdc` — the same rules as `AGENTS.md`, duplicated into Cursor's `.mdc`
+  rule format (`alwaysApply: true`) → `~/.cursor/rules/general.mdc`. Cursor's confirmed global
+  mechanism is the in-app **Settings → Rules → User Rules** box, not a filesystem path, so also
+  paste this file's body in there
+- `agents/claude-settings.json` — Claude Code global settings → `~/.claude/settings.json`
+- `agents/mcp-servers.sh` — registers MCP servers with Claude Code at user scope: Figma
+  (`mcp.figma.com`, design context), Markitdown (`uvx markitdown-mcp`, doc/PDF/image → markdown),
+  1Password (`1password-mcp`, needs Settings → Labs → "Enable local MCP server" in the 1Password
+  app), and Vercel (`mcp.vercel.com`, covers both Vercel projects and v0 UI generation). GitHub
+  and filesystem MCP servers were left out — git/PR work already goes through `gh` +
+  1Password SSH signing, and Claude Code's built-in file tools cover the rest. Not run by
+  `bootstrap.sh` (needs the `claude` CLI and an interactive OAuth step) — run it manually, see
+  bootstrap's final printout
+- **Graphify** (`uv tool install graphifyy`, installed by `bootstrap.sh`) — codebase
+  knowledge-graph CLI (`github.com/Graphify-Labs/graphify`); the CLI install is global, but
+  wiring it into a project (`graphify install`, then `/graphify .`) is per-project and done
+  manually, not scripted here
+- `agents/caveman-install.sh` — installs **caveman** (`github.com/JuliusBrussee/caveman`),
+  an output-compression skill/plugin, for Claude Code (plugin, compression **on by default**
+  from message one), Cursor, and Continue (both via `npx skills add ... -g`, global scope).
+  Not run by `bootstrap.sh` — the Claude Code step shells out to `npx github:...`, which this
+  machine's auto-mode classifier flags for interactive approval, so run it by hand. **Always
+  pass `-g` to any `skills add` command for this** — without it, the CLI defaults to
+  project scope and drops `.continue/`/`.agents/`/`skills-lock.json` into whatever directory
+  you're standing in when you run it (this happened once, into this repo, before the script
+  was fixed)
+- `agents/mattpocock-skills-install.sh` — installs a curated 6-7 skill subset of
+  [mattpocock/skills](https://github.com/mattpocock/skills) (41 skills total) for Claude Code,
+  Cursor, and Continue: `grill-with-docs` (align on a plan before coding, writes ADRs/glossary),
+  `tdd`, `implement`, `research`, `diagnosing-bugs`, `code-review`, plus
+  `git-guardrails-claude-code` (Claude Code only). The other ~34 skills were left out as
+  team/issue-tracker-oriented (`to-tickets`, `wayfinder`, `triage`, `qa`), unrelated to code
+  (the `writing-*` article skills), or narrow to Matt Pocock's own TypeScript course tooling
+  (`scaffold-exercises`, `migrate-to-shoehorn`, `setup-ts-deep-modules`) — revisit
+  `npx skills add mattpocock/skills -l` if your use case changes
+- `agents/hooks/block-dangerous-git.sh` (from the `git-guardrails-claude-code` skill above) —
+  a Claude Code `PreToolUse` hook, wired into `agents/claude-settings.json`, that hard-blocks
+  `git push`, `reset --hard`, `clean -f`/`-fd`, `branch -D`, and `checkout .`/`restore .`
+  before they execute — even if you tell Claude to go ahead in chat. This is stricter than the
+  "ask first" rule in `AGENTS.md`: for these specific commands, there's no asking, only a
+  block; run them yourself in your own terminal when you actually mean it. Symlinked to
+  `~/.claude/hooks/block-dangerous-git.sh`
 - `packages.txt` — apt package manifest installed by `bootstrap.sh`
 - `scripts/remove-luks-pin.sh` — re-bind TPM2 to LUKS after a firmware/PCR-7 change (see the doc)
 - `docs/ubuntu-setup-guide.md` — **full end-to-end runbook** for this machine (install → verified), stitching bootstrap + the docs below in order
@@ -66,6 +112,9 @@ ln -sfn ~/.dotfiles/ssh/config          ~/.ssh/config
 ln -sfn ~/.dotfiles/ssh/allowed_signers ~/.ssh/allowed_signers
 ln -sfn ~/.dotfiles/1password/agent.toml ~/.config/1Password/ssh/agent.toml
 ln -sfn ~/.dotfiles/vscode/settings.json ~/.config/Code/User/settings.json
+ln -sfn ~/.dotfiles/agents/AGENTS.md ~/.claude/CLAUDE.md
+ln -sfn ~/.dotfiles/agents/claude-settings.json ~/.claude/settings.json
+ln -sfn ~/.dotfiles/agents/cursor-general.mdc ~/.cursor/rules/general.mdc
 ```
 
 (`ls_colors` needs no symlink — `bashrc` reads `~/.dotfiles/ls_colors` directly. Regenerate with `vivid generate one-dark | sed 's/di=[^:]*/di=0;38;2;229;192;123/' > ~/.dotfiles/ls_colors`.)

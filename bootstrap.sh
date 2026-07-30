@@ -197,6 +197,16 @@ install_uv() {
 }
 
 # ---------------------------------------------------------------------------
+# 4b. Graphify (codebase knowledge-graph CLI, used per-project via `/graphify`)
+# ---------------------------------------------------------------------------
+install_graphify() {
+  if command -v uv >/dev/null 2>&1 && ! command -v graphify >/dev/null 2>&1; then
+    log "Installing Graphify CLI"
+    uv tool install graphifyy
+  fi
+}
+
+# ---------------------------------------------------------------------------
 # 5. Symlinks
 # ---------------------------------------------------------------------------
 link() {  # link <repo-relative-src> <dest>
@@ -215,6 +225,10 @@ make_symlinks() {
   link tmux/tmux.conf      "$HOME/.tmux.conf"
   link vscode/settings.json "$HOME/.config/Code/User/settings.json"
   link 1password/agent.toml "$HOME/.config/1Password/ssh/agent.toml"
+  link agents/AGENTS.md          "$HOME/.claude/CLAUDE.md"
+  link agents/claude-settings.json "$HOME/.claude/settings.json"
+  link agents/cursor-general.mdc "$HOME/.cursor/rules/general.mdc"
+  link agents/hooks/block-dangerous-git.sh "$HOME/.claude/hooks/block-dangerous-git.sh"
 
   # ssh needs strict perms; symlink the individual files, not the dir
   mkdir -p "$HOME/.ssh" && chmod 700 "$HOME/.ssh"
@@ -258,6 +272,7 @@ main() {
   install_packages
   install_prompt_and_font
   install_uv
+  install_graphify
   make_symlinks
   install_vscode_extensions
   restore_ptyxis
@@ -276,6 +291,22 @@ main() {
    4. YubiKey FIDO2 enrollment for LUKS + tap-to-sudo (login stays password
                                           — see docs/system-setup.md §3)
    5. Node via nvm, Docker              (optional dev toolchains)
+   6. ./agents/mcp-servers.sh, then `claude` -> /mcp to finish OAuth login
+                                          for figma-remote-mcp and vercel
+   7. Paste agents/cursor-general.mdc's body into Cursor's Settings > Rules
+                                          > User Rules (no confirmed global
+                                          file-based mechanism for Cursor)
+   8. `graphify install` (or /graphify . inside Claude Code/Cursor) per
+                                          project you want the knowledge
+                                          graph in — Graphify itself is
+                                          per-project, not global
+   9. ./agents/caveman-install.sh        (output-compression skill for
+                                          Claude Code/Cursor/Continue —
+                                          on by default on Claude Code)
+  10. ./agents/mattpocock-skills-install.sh (curated engineering skills:
+                                          grill-with-docs, tdd, implement,
+                                          research, diagnosing-bugs,
+                                          code-review, git-guardrails)
 
  Then open a new terminal (oh-my-posh + eza) and confirm
  `git log --show-signature` verifies.

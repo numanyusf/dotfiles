@@ -30,6 +30,7 @@ tmux         # see tmux/tmux.conf (config lives in this repo, symlinked)
 ripgrep
 fd-find
 lazygit          # git TUI
+ffmpeg           # audio/video for Markitdown MCP (PDF/Office work without it)
 python3-pip
 python3-venv
 nodejs

@@ -225,10 +225,15 @@ make_symlinks() {
   link tmux/tmux.conf      "$HOME/.tmux.conf"
   link vscode/settings.json "$HOME/.config/Code/User/settings.json"
   link 1password/agent.toml "$HOME/.config/1Password/ssh/agent.toml"
+  mkdir -p "$HOME/.cursor/rules" "$HOME/.cursor/hooks" "$HOME/.claude/hooks"
   link agents/AGENTS.md          "$HOME/.claude/CLAUDE.md"
   link agents/claude-settings.json "$HOME/.claude/settings.json"
   link agents/cursor-general.mdc "$HOME/.cursor/rules/general.mdc"
+  link agents/cursor-mcp.json    "$HOME/.cursor/mcp.json"
+  link agents/cursor-hooks.json  "$HOME/.cursor/hooks.json"
   link agents/hooks/block-dangerous-git.sh "$HOME/.claude/hooks/block-dangerous-git.sh"
+  link agents/hooks/block-dangerous-git.sh "$HOME/.cursor/hooks/block-dangerous-git.sh"
+  link agents/hooks/cursor-caveman-session.sh "$HOME/.cursor/hooks/cursor-caveman-session.sh"
 
   # ssh needs strict perms; symlink the individual files, not the dir
   mkdir -p "$HOME/.ssh" && chmod 700 "$HOME/.ssh"
@@ -293,9 +298,12 @@ main() {
    5. Node via nvm, Docker              (optional dev toolchains)
    6. ./agents/mcp-servers.sh, then `claude` -> /mcp to finish OAuth login
                                           for figma-remote-mcp and vercel
+      (Cursor MCP is agents/cursor-mcp.json → ~/.cursor/mcp.json; for a
+       project that needs `cursor-agent mcp enable`, also symlink that
+       file to <project>/.cursor/mcp.json — enable is flaky with global-only)
    7. Paste agents/cursor-general.mdc's body into Cursor's Settings > Rules
-                                          > User Rules (no confirmed global
-                                          file-based mechanism for Cursor)
+                                          > User Rules (filesystem rules also
+                                          live at ~/.cursor/rules/general.mdc)
    8. `graphify install` (or /graphify . inside Claude Code/Cursor) per
                                           project you want the knowledge
                                           graph in — Graphify itself is

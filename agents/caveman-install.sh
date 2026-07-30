@@ -11,6 +11,10 @@
 # On Claude Code, compression is ON by default from message one (SessionStart
 # hook). Toggle per-session with `/caveman` or by saying "normal mode".
 #
+# On Cursor, default-on is wired separately in agents/cursor-general.mdc
+# (alwaysApply) + agents/hooks/cursor-caveman-session.sh (sessionStart),
+# via agents/cursor-hooks.json — not by this install script alone.
+#
 # IMPORTANT: run the per-agent (`-a ...`) steps with `-g` (global scope) from
 # any directory. Without `-g`, the `skills` CLI defaults to *project* scope
 # and drops a `.continue/`, `.agents/`, and `skills-lock.json` into whatever

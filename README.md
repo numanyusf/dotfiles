@@ -43,15 +43,9 @@ It does **not** do the system-level security setup (LUKS/TPM2 unlock, YubiKey ta
   rule format (`alwaysApply: true`) → `~/.cursor/rules/general.mdc`. Cursor's confirmed global
   mechanism is the in-app **Settings → Rules → User Rules** box, not a filesystem path, so also
   paste this file's body in there
+- `agents/cursor-mcp.json` — Cursor MCP servers (**1Password**, **Figma**, **Vercel**, **Markitdown**) for *every* Cursor project → `~/.cursor/mcp.json`. This is the general Cursor MCP source of truth (not per-repo). Markitdown runs via `uvx markitdown-mcp@0.0.1a4` (needs `uv` / `uvx`; config uses `~/.local/bin/uvx`). Install `ffmpeg` (in `packages.txt`) for audio/video conversion; PDF/Office work without it. For projects where `cursor-agent mcp enable` must see a project listing, also symlink this file to `<project>/.cursor/mcp.json`.
 - `agents/claude-settings.json` — Claude Code global settings → `~/.claude/settings.json`
-- `agents/mcp-servers.sh` — registers MCP servers with Claude Code at user scope: Figma
-  (`mcp.figma.com`, design context), Markitdown (`uvx markitdown-mcp`, doc/PDF/image → markdown),
-  1Password (`1password-mcp`, needs Settings → Labs → "Enable local MCP server" in the 1Password
-  app), and Vercel (`mcp.vercel.com`, covers both Vercel projects and v0 UI generation). GitHub
-  and filesystem MCP servers were left out — git/PR work already goes through `gh` +
-  1Password SSH signing, and Claude Code's built-in file tools cover the rest. Not run by
-  `bootstrap.sh` (needs the `claude` CLI and an interactive OAuth step) — run it manually, see
-  bootstrap's final printout
+- `agents/mcp-servers.sh` — registers the same MCP set with Claude Code at **user** scope (available in every Claude project): Figma, Markitdown, 1Password, Vercel. Not Listick-specific. Not run by `bootstrap.sh` — run manually, then `claude` → `/mcp` for OAuth. Cursor uses `cursor-mcp.json` instead of this script.
 - **Graphify** (`uv tool install graphifyy`, installed by `bootstrap.sh`) — codebase
   knowledge-graph CLI (`github.com/Graphify-Labs/graphify`); the CLI install is global, but
   wiring it into a project (`graphify install`, then `/graphify .`) is per-project and done
@@ -74,13 +68,19 @@ It does **not** do the system-level security setup (LUKS/TPM2 unlock, YubiKey ta
   (the `writing-*` article skills), or narrow to Matt Pocock's own TypeScript course tooling
   (`scaffold-exercises`, `migrate-to-shoehorn`, `setup-ts-deep-modules`) — revisit
   `npx skills add mattpocock/skills -l` if your use case changes
-- `agents/hooks/block-dangerous-git.sh` (from the `git-guardrails-claude-code` skill above) —
-  a Claude Code `PreToolUse` hook, wired into `agents/claude-settings.json`, that hard-blocks
-  `git push`, `reset --hard`, `clean -f`/`-fd`, `branch -D`, and `checkout .`/`restore .`
-  before they execute — even if you tell Claude to go ahead in chat. This is stricter than the
+- `agents/hooks/block-dangerous-git.sh` (from the `git-guardrails-claude-code` skill, extended for Cursor) —
+  hard-blocks `git push`, `reset --hard`, `clean -f`/`-fd`, `branch -D`, and `checkout .`/`restore .`
+  before they execute — even if you tell the agent to go ahead in chat. This is stricter than the
   "ask first" rule in `AGENTS.md`: for these specific commands, there's no asking, only a
-  block; run them yourself in your own terminal when you actually mean it. Symlinked to
-  `~/.claude/hooks/block-dangerous-git.sh`
+  block; run them yourself in your own terminal when you actually mean it.
+  - **Claude Code:** `PreToolUse` / Bash via `agents/claude-settings.json` → `~/.claude/hooks/…`
+  - **Cursor:** `beforeShellExecution` via `agents/cursor-hooks.json` → `~/.cursor/hooks.json`
+    and `~/.cursor/hooks/block-dangerous-git.sh`
+- `agents/cursor-hooks.json` — Cursor user hooks → `~/.cursor/hooks.json`:
+  - `sessionStart` → `cursor-caveman-session.sh` (caveman **full** on by default, like Claude’s plugin)
+  - `beforeShellExecution` → `block-dangerous-git.sh` (hard-block destructive git)
+- `agents/cursor-general.mdc` — includes a Cursor-only **Communication (caveman)** section
+  (`alwaysApply: true`) so caveman stays on every reply; say `stop caveman` / `normal mode` to opt out
 - `packages.txt` — apt package manifest installed by `bootstrap.sh`
 - `scripts/remove-luks-pin.sh` — re-bind TPM2 to LUKS after a firmware/PCR-7 change (see the doc)
 - `docs/ubuntu-setup-guide.md` — **full end-to-end runbook** for this machine (install → verified), stitching bootstrap + the docs below in order
@@ -115,6 +115,11 @@ ln -sfn ~/.dotfiles/vscode/settings.json ~/.config/Code/User/settings.json
 ln -sfn ~/.dotfiles/agents/AGENTS.md ~/.claude/CLAUDE.md
 ln -sfn ~/.dotfiles/agents/claude-settings.json ~/.claude/settings.json
 ln -sfn ~/.dotfiles/agents/cursor-general.mdc ~/.cursor/rules/general.mdc
+ln -sfn ~/.dotfiles/agents/cursor-mcp.json ~/.cursor/mcp.json
+ln -sfn ~/.dotfiles/agents/cursor-hooks.json ~/.cursor/hooks.json
+ln -sfn ~/.dotfiles/agents/hooks/block-dangerous-git.sh ~/.claude/hooks/block-dangerous-git.sh
+ln -sfn ~/.dotfiles/agents/hooks/block-dangerous-git.sh ~/.cursor/hooks/block-dangerous-git.sh
+ln -sfn ~/.dotfiles/agents/hooks/cursor-caveman-session.sh ~/.cursor/hooks/cursor-caveman-session.sh
 ```
 
 (`ls_colors` needs no symlink — `bashrc` reads `~/.dotfiles/ls_colors` directly. Regenerate with `vivid generate one-dark | sed 's/di=[^:]*/di=0;38;2;229;192;123/' > ~/.dotfiles/ls_colors`.)

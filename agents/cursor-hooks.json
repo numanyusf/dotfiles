@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "hooks": {
+    "sessionStart": [
+      {
+        "command": "./hooks/cursor-caveman-session.sh"
+      }
+    ],
+    "beforeShellExecution": [
+      {
+        "command": "./hooks/block-dangerous-git.sh",
+        "failClosed": true
+      }
+    ]
+  }
+}

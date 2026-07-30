@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "1password": {
+      "command": "/opt/1Password/onepassword-mcp"
+    },
+    "figma": {
+      "url": "https://mcp.figma.com/mcp"
+    },
+    "vercel": {
+      "url": "https://mcp.vercel.com"
+    },
+    "markitdown": {
+      "command": "/home/numan/.local/bin/uvx",
+      "args": ["markitdown-mcp@0.0.1a4"]
+    }
+  }
+}

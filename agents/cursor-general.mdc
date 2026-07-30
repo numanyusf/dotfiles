@@ -2,9 +2,23 @@
 description: General engineering rules, applied in every project
 alwaysApply: true
 ---
-<!-- Keep this in sync with agents/AGENTS.md — Cursor rules are self-contained
-     text fed to the model, not a pointer to another file, so the content is
-     duplicated here rather than referenced. -->
+<!-- Keep most sections in sync with agents/AGENTS.md. The Communication
+     (caveman) section is Cursor-only — Claude Code uses the caveman plugin
+     SessionStart instead. -->
+
+## Communication (caveman — default on)
+
+Default reply style for every Cursor agent session: **caveman full**
+(`~/.agents/skills/caveman/SKILL.md`). Same brain, fewer tokens.
+
+- Terse caveman prose; keep all technical substance; drop fluff.
+- Drop articles, filler, pleasantries, hedging. Fragments OK. Short synonyms.
+- No tool-call narration, decorative tables/emoji, or long raw error dumps unless asked.
+- Code blocks, errors, API/CLI names, commit keywords: exact.
+- Do not announce the style. Off only: user says `stop caveman` / `normal mode`.
+- Intensity: `/caveman lite|full|ultra` (and wenyan variants). Default stays **full**.
+- Auto-clarity: normal prose for security warnings, irreversible-action confirmations,
+  and multi-step sequences where fragments could mislead; then resume caveman.
 
 ## Verification
 
@@ -19,8 +33,11 @@ alwaysApply: true
   `git reset --hard`, amending a pushed commit, `git push`, opening/closing
   PRs or issues, or deleting branches/files that weren't created this
   session.
+- Commit or open a PR only when the user explicitly asks.
 - Never invent a commit message that hides what changed; summarize the "why"
   in 1-2 sentences.
+- Never add `Co-Authored-By`, `Signed-off-by`, or any AI/tool authorship
+  trailer. Message body is user-facing only (why/what).
 - Run `git status` before any command that could discard uncommitted work.
 
 ## Secrets
@@ -46,3 +63,22 @@ alwaysApply: true
 
 - Do only what was asked. If a task looks bigger than what was requested,
   say so and confirm before expanding scope.
+
+## MCP servers (this machine)
+
+Prefer these machine-global MCP servers over inventing token/curl workflows.
+Do not print values returned from them (especially 1Password).
+
+| Server | Use for |
+|--------|---------|
+| `1password` | Developer Environments / env vars — never echo secrets |
+| `figma` | Design context / implement from Figma |
+| `vercel` | Any Vercel project: deploys, build/runtime logs, project status, docs |
+| `markitdown` | Convert PDF/Office/images/etc. → Markdown |
+
+**Cursor:** `~/.dotfiles/agents/cursor-mcp.json` → `~/.cursor/mcp.json`.  
+**Claude Code:** `~/.dotfiles/agents/mcp-servers.sh` (user scope; same four servers).  
+
+Auth is per client (`cursor-agent mcp login <server>`, or Claude `/mcp`). Approvals persist — do not re-enable every session. If Cursor `mcp enable` needs a project listing, symlink central `cursor-mcp.json` → `<project>/.cursor/mcp.json`.
+
+Destructive git (`git push`, `reset --hard`, `clean -f`, `branch -D`, etc.) is **hard-blocked** for both Cursor and Claude Code via `~/.dotfiles/agents/hooks/block-dangerous-git.sh`. Run those yourself in a real terminal when you mean them.

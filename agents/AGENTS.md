@@ -20,8 +20,11 @@ natively as `AGENTS.md` at a project root, or via the mirrored
   `git reset --hard`, amending a pushed commit, `git push`, opening/closing
   PRs or issues, or deleting branches/files that weren't created this
   session.
+- Commit or open a PR only when the user explicitly asks.
 - Never invent a commit message that hides what changed; summarize the "why"
   in 1-2 sentences.
+- Never add `Co-Authored-By`, `Signed-off-by`, or any AI/tool authorship
+  trailer. Message body is user-facing only (why/what).
 - Run `git status` before any command that could discard uncommitted work.
 
 ## Secrets
@@ -47,3 +50,22 @@ natively as `AGENTS.md` at a project root, or via the mirrored
 
 - Do only what was asked. If a task looks bigger than what was requested,
   say so and confirm before expanding scope.
+
+## MCP servers (this machine)
+
+Prefer these machine-global MCP servers over inventing token/curl workflows.
+Do not print values returned from them (especially 1Password).
+
+| Server | Use for |
+|--------|---------|
+| `1password` | Developer Environments / env vars — never echo secrets |
+| `figma` | Design context / implement from Figma |
+| `vercel` | Any Vercel project: deploys, build/runtime logs, project status, docs |
+| `markitdown` | Convert PDF/Office/images/etc. → Markdown |
+
+**Cursor:** `~/.dotfiles/agents/cursor-mcp.json` → `~/.cursor/mcp.json`.  
+**Claude Code:** `~/.dotfiles/agents/mcp-servers.sh` (user scope; same four servers).  
+
+Auth is per client (`cursor-agent mcp login <server>`, or Claude `/mcp`). Approvals persist across sessions — do not re-enable every time. If Cursor `mcp enable` fails with global-only config, symlink the central `cursor-mcp.json` into `<project>/.cursor/mcp.json`.
+
+Destructive git (`git push`, `reset --hard`, `clean -f`, `branch -D`, etc.) is **hard-blocked** for both Cursor (`beforeShellExecution`) and Claude Code (`PreToolUse`) via `~/.dotfiles/agents/hooks/block-dangerous-git.sh`. Run those yourself in a real terminal when you mean them.

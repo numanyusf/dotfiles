@@ -157,3 +157,4 @@ bind '"\eOA": history-search-backward'
 bind '"\eOB": history-search-forward'
 # --- end history prefix search ---
 # --- end prompt ---
+[ -s "/opt/adguard-cli/bash-completion.sh" ] && \. "/opt/adguard-cli/bash-completion.sh"

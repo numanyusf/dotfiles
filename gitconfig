@@ -9,8 +9,9 @@
 [gpg]
 	format = ssh
 
+# ssh-keygen signs through the forwarded 1Password agent (SSH_AUTH_SOCK)
 [gpg "ssh"]
-	program = /opt/1Password/op-ssh-sign
+	program = ssh-keygen
 	allowedSignersFile = /home/numan/.ssh/allowed_signers
 
 [commit]
@@ -23,6 +24,3 @@
 [credential "https://gist.github.com"]
 	helper =
 	helper = !/usr/bin/gh auth git-credential
-
-[core]
-	fsmonitor = true

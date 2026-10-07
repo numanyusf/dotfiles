@@ -1,6 +1,4 @@
-# 1Password SSH agent for all hosts
-Host *
-	IdentityAgent ~/.1password/agent.sock
+# homelab: keys come from the laptop's 1Password agent via ForwardAgent (no local agent socket)
 
 # --- CSC (Finnish supercomputing) ---
 Host lumi
@@ -20,10 +18,3 @@ Host roihu
 	ControlMaster auto
 	ControlPath ~/.ssh/cm-%r@%h:%p
 	ControlPersist 10m
-
-Host homelab
-	HostName 192.168.50.30
-	User numan
-	IdentityFile ~/.ssh/homelab.pub
-	IdentitiesOnly yes
-	ForwardAgent yes

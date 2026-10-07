@@ -34,7 +34,9 @@
             "font": {
                 "face": "MesloLGM Nerd Font",
                 "size": 12
-            }
+            },
+            "cursorShape": "bar",
+            "padding": "8, 6"
         },
         "list": [
             {
@@ -50,12 +52,12 @@
             },
             {
                 "guid": "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
-                "hidden": false,
+                "hidden": true,
                 "name": "Command Prompt"
             },
             {
                 "guid": "{b453ae62-4e3d-5e58-b989-0a998ec441b8}",
-                "hidden": false,
+                "hidden": true,
                 "name": "Azure Cloud Shell",
                 "source": "Windows.Terminal.Azure"
             },

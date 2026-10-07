@@ -186,3 +186,19 @@ if [ -n "$WSL_DISTRO_NAME" ]; then
     unset _npr
 fi
 # --- end WSL 1Password bridge ---
+
+# --- CLI extras: bat, fzf via fd + One Dark colours, zoxide (Claude Code 2026-10-07) ---
+# Ubuntu/Debian ship bat and fd as batcat/fdfind; ~/.local/bin/{bat,fd} symlink to them.
+export BAT_THEME="OneHalfDark"
+command -v bat >/dev/null 2>&1 && alias cat='bat --paging=never --style=plain'
+if command -v fd >/dev/null 2>&1; then
+    export FZF_DEFAULT_COMMAND='fd --type f --hidden --exclude .git'
+    export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+    export FZF_ALT_C_COMMAND='fd --type d --hidden --exclude .git'
+fi
+export FZF_DEFAULT_OPTS='--height 40% --layout reverse --border
+  --color fg:#D6D2C4,hl:#E5C07B,fg+:#FFFEFE,bg+:#2C313A,hl+:#E5C07B
+  --color info:#98C379,prompt:#E06C75,pointer:#E06C75,marker:#98C379,spinner:#C678DD,header:#56B6C2,border:#5C6370'
+# zoxide last: it hooks PROMPT_COMMAND after oh-my-posh. `z foo` jumps, `zi` picks with fzf.
+command -v zoxide >/dev/null 2>&1 && eval "$(zoxide init bash)"
+# --- end CLI extras ---

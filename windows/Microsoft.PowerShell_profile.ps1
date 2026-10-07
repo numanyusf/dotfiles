@@ -20,10 +20,10 @@ if (Get-Command eza -ErrorAction SilentlyContinue) {
     function lt { eza --tree --level=2 --icons=auto --group-directories-first @args }
 }
 
-# --- history prefix search on Up/Down, inline suggestions from history ---
+# --- history prefix search on Up/Down, suggestions from history as a dropdown list ---
 Set-PSReadLineKeyHandler -Key UpArrow -Function HistorySearchBackward
 Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward
-Set-PSReadLineOption -PredictionSource History -HistoryNoDuplicates
+Set-PSReadLineOption -PredictionSource History -PredictionViewStyle ListView -HistoryNoDuplicates  # F2 toggles inline/list
 
 # --- fzf: Ctrl-R history, Ctrl-T files, Alt-C cd (PSFzf module) ---
 if ((Get-Command fzf -ErrorAction SilentlyContinue) -and (Get-Module -ListAvailable PSFzf)) {
@@ -35,4 +35,26 @@ if ((Get-Command fzf -ErrorAction SilentlyContinue) -and (Get-Module -ListAvaila
 # --- gh completion ---
 if (Get-Command gh -ErrorAction SilentlyContinue) {
     gh completion -s powershell | Out-String | Invoke-Expression
+}
+
+# --- bat: cat with syntax highlighting ---
+$env:BAT_THEME = "OneHalfDark"
+if (Get-Command bat -ErrorAction SilentlyContinue) {
+    Remove-Item Alias:cat -Force -ErrorAction SilentlyContinue
+    function cat { bat --paging=never --style=plain @args }
+}
+
+# --- fzf: fd as the file source, One Dark colours (same as bashrc) ---
+if (Get-Command fd -ErrorAction SilentlyContinue) {
+    $env:FZF_DEFAULT_COMMAND = 'fd --type f --hidden --exclude .git'
+    $env:FZF_CTRL_T_COMMAND = $env:FZF_DEFAULT_COMMAND
+    $env:FZF_ALT_C_COMMAND = 'fd --type d --hidden --exclude .git'
+}
+$env:FZF_DEFAULT_OPTS = '--height 40% --layout reverse --border ' +
+    '--color fg:#D6D2C4,hl:#E5C07B,fg+:#FFFEFE,bg+:#2C313A,hl+:#E5C07B ' +
+    '--color info:#98C379,prompt:#E06C75,pointer:#E06C75,marker:#98C379,spinner:#C678DD,header:#56B6C2,border:#5C6370'
+
+# --- zoxide last: `z foo` jumps, `zi` picks with fzf ---
+if (Get-Command zoxide -ErrorAction SilentlyContinue) {
+    Invoke-Expression (& { (zoxide init powershell | Out-String) })
 }

@@ -218,6 +218,7 @@ link() {  # link <repo-relative-src> <dest>
 make_symlinks() {
   log "Linking config into place"
   link bashrc              "$HOME/.bashrc"
+  touch "$HOME/.hushlogin"   # quiet Debian MOTD; scripts/motd.sh shows the status screen instead
   link gitconfig           "$HOME/.gitconfig"
   link oh-my-posh          "$HOME/.config/oh-my-posh"
   link nvim                "$HOME/.config/nvim"

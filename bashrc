@@ -186,3 +186,12 @@ export FZF_DEFAULT_OPTS='--height 40% --layout reverse --border
 # zoxide last: it hooks PROMPT_COMMAND after oh-my-posh. `z foo` jumps, `zi` picks with fzf.
 command -v zoxide >/dev/null 2>&1 && eval "$(zoxide init bash)"
 # --- end CLI extras ---
+
+# --- homelab login status screen (Claude Code 2026-10-07) ---
+# Interactive SSH logins only; skipped in tmux, VS Code terminals and dev containers.
+# Debian's MOTD and "Last login" line are hushed by ~/.hushlogin; the script shows its own.
+if [ -n "$SSH_CONNECTION" ] && [ -z "$TMUX" ] && [ "$TERM_PROGRAM" != "vscode" ] && [ -z "$REMOTE_CONTAINERS" ] \
+   && shopt -q login_shell && [ -x "$HOME/.dotfiles/scripts/motd.sh" ]; then
+  "$HOME/.dotfiles/scripts/motd.sh"
+fi
+# --- end status screen ---

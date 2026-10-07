@@ -9,24 +9,21 @@ Host lumi
 	IdentityFile ~/.ssh/csc.pub
 	IdentitiesOnly yes
 
-Host puhti
-	HostName puhti.csc.fi
-	User xcnuyo
-	ForwardAgent yes
-	MACs hmac-sha2-512
-
 Host roihu
 	HostName roihu-gpu.csc.fi
 	User xcnuyo
 	IdentityFile ~/.ssh/csc.pub
 	CertificateFile ~/.ssh/csc-cert.pub
 	IdentitiesOnly yes
+	ServerAliveInterval 60
+	ServerAliveCountMax 10
+	ControlMaster auto
+	ControlPath ~/.ssh/cm-%r@%h:%p
+	ControlPersist 10m
 
-# --- Personal / other ---
-Host hetzner
-	HostName 204.168.134.3
+Host homelab
+	HostName 192.168.50.30
 	User numan
-
-Host imhosting
-	HostName imhosting.local
-	User numan
+	IdentityFile ~/.ssh/homelab.pub
+	IdentitiesOnly yes
+	ForwardAgent yes

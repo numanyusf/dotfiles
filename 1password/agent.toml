@@ -11,3 +11,6 @@ vault = "Work"
 
 [[ssh-keys]]
 vault = "Dev"
+
+[[ssh-keys]]
+vault = "homelab"

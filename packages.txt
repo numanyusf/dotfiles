@@ -39,8 +39,10 @@ npm
 # --- Disk encryption (LUKS + LVM) ---
 cryptsetup
 lvm2
+tpm2-tools     # MUST be installed before rebuilding the initrd — dracut's tpm2-tss
+               # module needs the `tpm2` binary or systemd-cryptsetup is dropped
 
-# --- YubiKey (FIDO2 for LUKS unlock only — tap-to-sudo/login tried, reverted) ---
+# --- YubiKey (tap-to-sudo / 1Password polkit; LUKS boot unlock is TPM2 now) ---
 # See docs/system-setup.md §3 for why.
 yubikey-manager
 yubikey-personalization

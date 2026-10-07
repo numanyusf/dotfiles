@@ -1,0 +1,12 @@
+# Keep Firefox on the Mozilla APT repo (packages.mozilla.org), never the
+# Ubuntu snap transitional package. The Ubuntu package carries epoch 1:, so
+# it out-versions Mozilla's 153.x and unattended-upgrades will otherwise
+# "upgrade" into it, silently swapping the deb for the snap and stranding
+# the existing profile.
+Package: *
+Pin: origin packages.mozilla.org
+Pin-Priority: 1000
+
+Package: firefox firefox-l10n-* firefox-locale-*
+Pin: release o=Ubuntu
+Pin-Priority: -1

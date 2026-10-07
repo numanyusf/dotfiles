@@ -1,16 +1,4 @@
 {
-  "extraKnownMarketplaces": {
-    "caveman": {
-      "source": {
-        "source": "github",
-        "repo": "JuliusBrussee/caveman"
-      }
-    }
-  },
-  "theme": "auto",
-  "enabledPlugins": {
-    "caveman@caveman": true
-  },
   "hooks": {
     "PreToolUse": [
       {
@@ -23,5 +11,18 @@
         ]
       }
     ]
-  }
+  },
+  "enabledPlugins": {
+    "caveman@caveman": true
+  },
+  "extraKnownMarketplaces": {
+    "caveman": {
+      "source": {
+        "source": "github",
+        "repo": "JuliusBrussee/caveman"
+      }
+    }
+  },
+  "theme": "auto",
+  "model": "opus[1m]"
 }

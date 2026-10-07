@@ -122,13 +122,12 @@ Signed-By: /usr/share/keyrings/1password-archive-keyring.gpg' \
     log "  Firefox (Mozilla .deb)"
     curl -sS https://packages.mozilla.org/apt/repo-signing-key.gpg \
       | sudo tee /etc/apt/keyrings/packages.mozilla.org.asc >/dev/null
-    echo 'deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.asc] https://packages.mozilla.org/apt mozilla main' \
-      | sudo tee /etc/apt/sources.list.d/mozilla.list >/dev/null
-    # pin so the .deb always wins over the snap/transitional package
-    echo 'Package: *
-Pin: origin packages.mozilla.org
-Pin-Priority: 1000' | sudo tee /etc/apt/preferences.d/mozilla >/dev/null
+    sudo cp "$DOTFILES/system/apt-sources-mozilla.list" /etc/apt/sources.list.d/mozilla.list
   fi
+  # Always refresh the pin: priority 1000 alone only picks the candidate, and
+  # Ubuntu's transitional firefox has epoch 1: so unattended-upgrades will still
+  # "upgrade" the .deb into the snap. See docs/system-setup.md § 4a.
+  sudo cp "$DOTFILES/system/apt-preferences-mozilla" /etc/apt/preferences.d/mozilla
 
   # eduVPN (Tampere University / CSC access)
   if [ ! -f /etc/apt/sources.list.d/eduvpn-v4.list ]; then

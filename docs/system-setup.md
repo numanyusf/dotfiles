@@ -49,7 +49,12 @@ in your **own terminal** — never route secrets through a shell you don't contr
 
 Layout: root is **LUKS2 on `/dev/nvme0n1p3`** → LVM → ext4
 (`ubuntu--vg-ubuntu--lv`); separate unencrypted `/boot` (`nvme0n1p2`).
-LUKS UUID `520547cb-8824-4086-b6be-de705b75622b` (will differ on reinstall).
+LUKS UUID `ded0d141-fe7c-427c-8051-62b0d8ac9272` (will differ on reinstall).
+
+**Current boot unlock: TPM2, no PIN** (since 2026-08-12) — `/etc/crypttab` is
+`luks,tpm2-device=auto`, so boot goes straight to GDM with no prompt. The two
+YubiKey FIDO2 keyslots are still in the header but are no longer consulted at
+boot; re-add `fido2-device=auto` to crypttab to bring them back.
 
 The Ubuntu installer's "hardware-backed"/TPM FDE option **fails** on this laptop
 (Intel Boot Guard is fused by Lenovo; the installer precheck rejects it). So:
@@ -76,9 +81,9 @@ sudo cp /etc/crypttab /etc/crypttab.pre-tpm.bak
 sudo dracut --force /boot/initrd.img-"$(uname -r)" "$(uname -r)"
 ```
 
-**Keyslots end up:** 0 = passphrase (fallback, **keep forever**), 1 = tpm2.
-On wrong PIN or a PCR-7 change (firmware/Secure Boot update) it **falls back to
-the passphrase — no lockout**.
+**Keyslots now:** 0 = passphrase (fallback, **keep forever**), 1 + 2 = the two
+YubiKey FIDO2 credentials, 3 = tpm2. On a PCR-7 change (firmware/Secure Boot
+update) it **falls back to the passphrase — no lockout**.
 
 ⚠️ **Any firmware / Secure Boot update that changes PCR 7 breaks the TPM seal.**
 The next boot falls back to the passphrase ("TPM policy does not match current
@@ -95,6 +100,27 @@ sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=7 /dev/nvme0n1p3
 Also run `sudo fwupdmgr update` on a fresh install to apply UEFI db/dbx updates
 **before** sealing the TPM (so you seal to the final PCR 7).
 
+### 2a. `/etc/default/grub` — keep it, it is not optional
+
+A kernel upgrade on 2026-08-11 regenerated `/boot/grub/grub.cfg` while
+`/etc/default/grub` was **missing** (only `grub.prime-backup`, nvidia-prime's
+copy, survived). `grub-mkconfig` fell back to built-in defaults, so `quiet
+splash` vanished from the kernel command line. Plymouth then refused to start
+(`plymouth-start.service ... unmet condition check
+ConditionKernelCommandLine=splash`) and the LUKS prompt appeared as raw text on
+`/dev/tty1` instead of the graphical box — which looks like the unlock method
+changed when nothing about LUKS had changed at all.
+
+The file is tracked here as `system/default-grub`. To restore:
+
+```bash
+sudo cp ~/.dotfiles/system/default-grub /etc/default/grub
+sudo update-grub
+```
+
+Diagnose the same class of problem with `cat /proc/cmdline` (is `splash`
+there?) and `journalctl -b | grep plymouth-start`.
+
 ---
 
 ## 3. YubiKey — FIDO2 for LUKS, tap-to-sudo, and 1Password unlock (login stays password-only)
@@ -103,9 +129,10 @@ Two keys: **primary** = Security Key C NFC (FIDO2/U2F only, has a FIDO2 PIN);
 **backup** = YubiKey 5C. Tooling (via `bootstrap.sh`): `libpam-u2f`,
 `yubikey-manager`, `pcscd`, `pamtester`.
 
-**Current state:** keys are wired into LUKS (§2), `sudo`, and `polkit` (§3c —
-powers 1Password's "Unlock using system authentication"), but **not**
-`gdm-password`. Tap-to-login was tried **twice** (most recently 2026-07-28)
+**Current state:** keys are wired into `sudo` and `polkit` (§3c — powers
+1Password's "Unlock using system authentication"), but **not** `gdm-password`.
+Their LUKS keyslots (1 and 2) still exist but are no longer used at boot — that
+moved to TPM2 in §2. Tap-to-login was tried **twice** (most recently 2026-07-28)
 and both times worked for the login prompt itself, but `pam_u2f` as
 `sufficient` *before* `@include common-auth` means the real password never
 reaches `pam_unix` — so the GNOME login keyring (which auto-unlocks using the
@@ -241,6 +268,42 @@ with no `conversation failed` / `SystemAuthError` lines.
 4. **`gh auth login`** (HTTPS, token in keyring) — powers the git credential helper.
 5. **CSC SSH** (`lumi`/`puhti`/`roihu`): needs `~/.ssh/csc.pub` / `csc-cert.pub`
    — export from 1Password or MyCSC on first connect (`IdentitiesOnly yes` is set).
+
+### 4a. Firefox must stay on the Mozilla .deb — pin it against the snap
+
+Ubuntu's `firefox` package is a transitional stub that installs the snap, and
+it carries **epoch `1:`** (`1:1snap1-0ubuntu8`), so apt sorts it *above* every
+Mozilla version (`153.0.4~build1`). The upstream-recommended pin —
+`Pin-Priority: 1000` on `origin packages.mozilla.org` — only sets the
+candidate; it does not make the Ubuntu package uninstallable. On 2026-08-16
+`unattended-upgrade` therefore "upgraded" the deb into the snap:
+
+```
+Upgrade: firefox:amd64 (153.0.3~build1, 1:1snap1-0ubuntu8)
+```
+
+The snap is sandboxed and cannot read `~/.config/mozilla`, so it started on an
+empty profile in `~/snap/firefox/common/.mozilla/firefox/` — looks exactly like
+losing every setting, logged-out everywhere, extensions gone. Nothing is
+actually lost; the real profile is still at
+`~/.config/mozilla/firefox/<id>.default-release` (Firefox 153 uses XDG dirs, so
+`~/.mozilla` holds only `native-messaging-hosts`).
+
+Both files are tracked: `system/apt-preferences-mozilla` (adds a second stanza
+pinning `firefox*` from `o=Ubuntu` to `-1`) and `system/apt-sources-mozilla.list`.
+To restore or repair:
+
+```bash
+sudo cp ~/.dotfiles/system/apt-preferences-mozilla /etc/apt/preferences.d/mozilla
+sudo cp ~/.dotfiles/system/apt-sources-mozilla.list /etc/apt/sources.list.d/mozilla.list
+sudo apt update
+sudo apt install --allow-downgrades firefox   # pulls the Mozilla deb back
+sudo snap remove firefox
+```
+
+Verify the pin took with `apt-cache policy firefox` — the `1:1snap1-*` line must
+show priority `-1`. `snap remove` saves a data snapshot (`snap saved`), so the
+throwaway snap profile is recoverable if something was set up inside it.
 
 ---
 

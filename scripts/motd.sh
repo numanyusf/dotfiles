@@ -72,13 +72,25 @@ if [ -n "$lip" ] && command -v tailscale >/dev/null; then
   n=$(tailscale status 2>/dev/null | awk -v ip="$lip" '$1 == ip {print $2; exit}'); [ -n "$n" ] && lname=$n
 fi
 
-# --- print ---
-printf '\n  %s▟█▙%s  %s%s%s · %s · up %s\n' "$A" "$N" "$W" "$host" "$N" "$os" "$up"
-printf '  %s▜█▛%s  %s%s · LAN %s · TS %s%s\n\n' "$A" "$N" "$D" "$now" "${lan:--}" "${ts:--}" "$N"
 hot() { (( ${1%.*} >= HOT )) && printf '%s!%s' "$HR" "$N" || printf ' '; }
-printf '  CPU     %s %3s %%%s  %s%s%s Memory  %s  %s / %s\n' "$(bar "$cpu")" "$cpu" "$(hot "$cpu")" "$tcol" "$(pad "${temp:+$temp °C}" 17)" "$N" "$(bar "$mp")" "$(human "$mu")" "$(human "$mt")"
+
+# --- print ---
+# Debian swirl (as in neofetch/fastfetch) beside the first six lines; compact header on narrow terminals.
+cols=${COLUMNS:-$(tput cols 2>/dev/null || echo 80)}
+l1="$(printf '%s%s%s · %s · up %s' "$W" "$host" "$N" "$os" "$up")"
+l2="$(printf '%s%s · LAN %s · TS %s%s' "$D" "$now" "${lan:--}" "${ts:--}" "$N")"
+l4="$(printf 'CPU     %s %3s %%%s  %s%s%s Memory  %s  %s / %s' "$(bar "$cpu")" "$cpu" "$(hot "$cpu")" "$tcol" "$(pad "${temp:+$temp °C}" 17)" "$N" "$(bar "$mp")" "$(human "$mu")" "$(human "$mt")")"
 if [ -n "$bk" ]; then bkline="Backup  $(bar "$bp")  $(human "$bu") / $(human "$bt")"; else bkline="Backup  ${R}stick not mounted${N}"; fi
-printf '  SSD     %s %3s %%%s  %s%s%s %s\n\n' "$(bar "$sp")" "$sp" "$(hot "$sp")" "$D" "$(pad "$(human "$su") / $(human "$st")" 17)" "$N" "$bkline"
+l5="$(printf 'SSD     %s %3s %%%s  %s%s%s %s' "$(bar "$sp")" "$sp" "$(hot "$sp")" "$D" "$(pad "$(human "$su") / $(human "$st")" 17)" "$N" "$bkline")"
+echo
+if (( cols >= 110 )); then
+  logo=('  _____  ' ' /  __ \ ' '|  /    |' '|  \___- ' '-_       ' '  --_    ')
+  info=("$l1" "$l2" "" "$l4" "$l5" "")
+  for i in 0 1 2 3 4 5; do printf '  %s%s%s   %s\n' "$A" "${logo[$i]}" "$N" "${info[$i]}"; done
+else
+  printf '  %s\n  %s\n\n  %s\n  %s\n' "$l1" "$l2" "$l4" "$l5"
+fi
+echo
 printf '  %s\n\n' "$(IFS='|'; out=""; for h in "${health[@]}"; do out+="$h   "; done; echo "$out")"
 printf '  %s↪ home.imhosting.cc%s' "$A" "$N"
 [ -n "$lip" ] && printf '        %slast login %s from %s%s' "$D" "$lwhen" "$lname" "$N"

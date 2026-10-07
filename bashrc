@@ -169,3 +169,20 @@ case ":$PATH:" in
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
 # pnpm end
+
+# --- WSL: bridge the Windows 1Password SSH agent to ~/.1password/agent.sock (Claude Code 2026-10-07) ---
+# ssh/config points every host at that socket, same path as the native Linux 1Password agent.
+# Needs `socat` (apt) and npiperelay.exe in %LOCALAPPDATA%\npiperelay (github.com/albertony/npiperelay).
+if [ -n "$WSL_DISTRO_NAME" ]; then
+    export SSH_AUTH_SOCK="$HOME/.1password/agent.sock"
+    export BROWSER="$HOME/.dotfiles/scripts/winbrowser"   # open links in the Windows browser
+    _npr="/mnt/c/Users/$USER/AppData/Local/npiperelay/npiperelay.exe"
+    if command -v socat >/dev/null 2>&1 && [ -x "$_npr" ] \
+       && ! ss -lx 2>/dev/null | grep -qF "$SSH_AUTH_SOCK"; then
+        mkdir -p "${SSH_AUTH_SOCK%/*}" && rm -f "$SSH_AUTH_SOCK"
+        (setsid socat UNIX-LISTEN:"$SSH_AUTH_SOCK",fork \
+            EXEC:"$_npr -ei -s //./pipe/openssh-ssh-agent",nofork >/dev/null 2>&1 &)
+    fi
+    unset _npr
+fi
+# --- end WSL 1Password bridge ---

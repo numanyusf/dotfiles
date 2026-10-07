@@ -26,3 +26,7 @@
 
 [core]
 	fsmonitor = true
+
+# Per-machine overrides (not in the repo), e.g. gpg.ssh.program on WSL
+[include]
+	path = ~/.config/git/local.gitconfig

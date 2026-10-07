@@ -21,8 +21,17 @@ Host roihu
 	ControlPath ~/.ssh/cm-%r@%h:%p
 	ControlPersist 10m
 
+# homelab over Tailscale (MagicDNS); homelab-lan for the home LAN when Tailscale is down
 Host homelab
+	HostName homelab
+	User numan
+	IdentityFile ~/.ssh/homelab.pub
+	IdentitiesOnly yes
+	ForwardAgent yes
+
+Host homelab-lan
 	HostName 192.168.50.30
+	HostKeyAlias homelab
 	User numan
 	IdentityFile ~/.ssh/homelab.pub
 	IdentitiesOnly yes

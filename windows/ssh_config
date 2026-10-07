@@ -1,0 +1,18 @@
+# Windows OpenSSH config -> %USERPROFILE%\.ssh\config (copied, not symlinked)
+# Keys come from the 1Password agent (named pipe); IdentityFile points at the public half only.
+
+Host homelab
+    HostName homelab
+    User numan
+    IdentityFile ~/.ssh/homelab.pub
+    IdentitiesOnly yes
+    ForwardAgent yes
+
+# Same machine over the home LAN, for when Tailscale is down
+Host homelab-lan
+    HostName 192.168.50.30
+    HostKeyAlias homelab
+    User numan
+    IdentityFile ~/.ssh/homelab.pub
+    IdentitiesOnly yes
+    ForwardAgent yes

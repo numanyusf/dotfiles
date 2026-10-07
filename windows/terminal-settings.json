@@ -1,0 +1,102 @@
+{
+    "$help": "https://aka.ms/terminal-documentation",
+    "$schema": "https://aka.ms/terminal-profiles-schema",
+    "actions": [],
+    "copyFormatting": "none",
+    "copyOnSelect": false,
+    "defaultProfile": "{574e775e-4f2a-5b96-ac1e-a2962a402336}",
+    "keybindings": [
+        {
+            "id": "Terminal.CopyToClipboard",
+            "keys": "ctrl+c"
+        },
+        {
+            "id": "Terminal.FindText",
+            "keys": "ctrl+shift+f"
+        },
+        {
+            "id": "Terminal.PasteFromClipboard",
+            "keys": "ctrl+v"
+        },
+        {
+            "id": "Terminal.DuplicatePaneAuto",
+            "keys": "alt+shift+d"
+        }
+    ],
+    "newTabMenu": [
+        {
+            "type": "remainingProfiles"
+        }
+    ],
+    "profiles": {
+        "defaults": {
+            "colorScheme": "One Warm",
+            "font": {
+                "face": "MesloLGM Nerd Font",
+                "size": 12
+            }
+        },
+        "list": [
+            {
+                "guid": "{574e775e-4f2a-5b96-ac1e-a2962a402336}",
+                "name": "PowerShell",
+                "source": "Windows.Terminal.PowershellCore",
+                "hidden": false
+            },
+            {
+                "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
+                "hidden": false,
+                "name": "Windows PowerShell"
+            },
+            {
+                "guid": "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
+                "hidden": false,
+                "name": "Command Prompt"
+            },
+            {
+                "guid": "{b453ae62-4e3d-5e58-b989-0a998ec441b8}",
+                "hidden": false,
+                "name": "Azure Cloud Shell",
+                "source": "Windows.Terminal.Azure"
+            },
+            {
+                "guid": "{51855cb2-8cce-5362-8f54-464b92b32386}",
+                "hidden": false,
+                "name": "Ubuntu",
+                "source": "CanonicalGroupLimited.Ubuntu_79rhkp1fndgsc"
+            },
+            {
+                "guid": "{2c4de342-38b7-51cf-b940-2309a097f518}",
+                "hidden": true,
+                "name": "Ubuntu",
+                "source": "Windows.Terminal.Wsl"
+            }
+        ]
+    },
+    "schemes": [
+        {
+            "name": "One Warm",
+            "background": "#16191D",
+            "foreground": "#D6D2C4",
+            "cursorColor": "#D6D2C4",
+            "selectionBackground": "#3E4451",
+            "black": "#000000",
+            "red": "#E06C75",
+            "green": "#98C379",
+            "yellow": "#D19A66",
+            "blue": "#61AFEF",
+            "purple": "#C678DD",
+            "cyan": "#56B6C2",
+            "white": "#ABB2BF",
+            "brightBlack": "#5C6370",
+            "brightRed": "#E06C75",
+            "brightGreen": "#98C379",
+            "brightYellow": "#D19A66",
+            "brightBlue": "#61AFEF",
+            "brightPurple": "#C678DD",
+            "brightCyan": "#56B6C2",
+            "brightWhite": "#FFFEFE"
+        }
+    ],
+    "themes": []
+}

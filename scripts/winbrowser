@@ -1,0 +1,3 @@
+#!/bin/sh
+# BROWSER for WSL: open URLs in the Windows default browser (wslu/wslview isn't packaged in Ubuntu 26.04)
+exec /mnt/c/Windows/System32/rundll32.exe url.dll,FileProtocolHandler "$1"

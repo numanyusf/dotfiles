@@ -1,0 +1,32 @@
+# Git for Windows -> %USERPROFILE%\.gitconfig (copied, not symlinked)
+[user]
+	name = Numan Yousaf
+	email = numan.yusf@gmail.com
+	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGtYIzxxFPtjRb2E5TT6ZKYpjZgQS5aBVG3vwNTIjRrd
+
+[init]
+	defaultBranch = main
+
+# Windows OpenSSH talks to the 1Password agent pipe; Git's bundled ssh can't
+[core]
+	sshCommand = C:/Windows/System32/OpenSSH/ssh.exe
+	autocrlf = input
+
+[gpg]
+	format = ssh
+
+# Sign through the agent with Windows ssh-keygen (the Store app's op-ssh-sign.exe can't be launched directly)
+[gpg "ssh"]
+	program = C:/Windows/System32/OpenSSH/ssh-keygen.exe
+	allowedSignersFile = C:/Users/numan/.ssh/allowed_signers
+
+[commit]
+	gpgsign = true
+
+[credential "https://github.com"]
+	helper =
+	helper = !'C:/Program Files/GitHub CLI/gh.exe' auth git-credential
+
+[credential "https://gist.github.com"]
+	helper =
+	helper = !'C:/Program Files/GitHub CLI/gh.exe' auth git-credential

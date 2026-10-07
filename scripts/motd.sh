@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 # Login status screen for the homelab (shown by bashrc on interactive SSH logins).
-# Same look as the dashboard: amber bars, red at 80 %, green/amber/red dots.
+# Accent is Debian red (#D70751); a bar at 80 %+ turns bright bold red with a "!". Dots: green/amber/red.
 # Never blocks: the dashboard API gets 1 s, everything else is local.
 
-A=$'\e[38;5;214m'; R=$'\e[38;5;203m'; G=$'\e[38;5;78m'; D=$'\e[38;5;245m'; W=$'\e[1;97m'; N=$'\e[0m'
+A=$'\e[38;2;215;7;81m'; Y=$'\e[38;5;214m'; R=$'\e[38;5;203m'; HR=$'\e[1;38;2;255;64;64m'; G=$'\e[38;5;78m'; D=$'\e[38;5;245m'; W=$'\e[1;97m'; N=$'\e[0m'
 HOT=80
 
 bar() {  # bar <percent> -> 10-segment bar, red at HOT
   local p=${1%.*} c=$A n i out=""
-  (( p >= HOT )) && c=$R
+  (( p >= HOT )) && c=$HR
   n=$(( (p + 5) / 10 )); (( p > 0 && n == 0 )) && n=1
   for ((i = 0; i < 10; i++)); do (( i < n )) && out+="▰" || out+="▱"; done
   printf '%s%s%s' "$c" "$out" "$N"
@@ -60,7 +60,7 @@ if [ -n "$sum" ] && command -v jq >/dev/null; then
     [ "$bs" = STATUS_SUCCESS ] && health+=("$(dot "$G" "backup $when OK")") || health+=("$(dot "$R" "backup $when FAILED")")
   fi
   upd=$(jq -r '.diun.updates // 0' <<<"$sum")
-  (( upd > 0 )) && health+=("$(dot "$A" "$upd updates")") || health+=("$(dot "$G" "0 updates")")
+  (( upd > 0 )) && health+=("$(dot "$Y" "$upd updates")") || health+=("$(dot "$G" "0 updates")")
 else
   health+=("$(dot "$D" "dashboard not reachable")")
 fi
@@ -75,9 +75,10 @@ fi
 # --- print ---
 printf '\n  %s▟█▙%s  %s%s%s · %s · up %s\n' "$A" "$N" "$W" "$host" "$N" "$os" "$up"
 printf '  %s▜█▛%s  %s%s · LAN %s · TS %s%s\n\n' "$A" "$N" "$D" "$now" "${lan:--}" "${ts:--}" "$N"
-printf '  CPU     %s %3s %%   %s%s%s Memory  %s  %s / %s\n' "$(bar "$cpu")" "$cpu" "$tcol" "$(pad "${temp:+$temp °C}" 17)" "$N" "$(bar "$mp")" "$(human "$mu")" "$(human "$mt")"
+hot() { (( ${1%.*} >= HOT )) && printf '%s!%s' "$HR" "$N" || printf ' '; }
+printf '  CPU     %s %3s %%%s  %s%s%s Memory  %s  %s / %s\n' "$(bar "$cpu")" "$cpu" "$(hot "$cpu")" "$tcol" "$(pad "${temp:+$temp °C}" 17)" "$N" "$(bar "$mp")" "$(human "$mu")" "$(human "$mt")"
 if [ -n "$bk" ]; then bkline="Backup  $(bar "$bp")  $(human "$bu") / $(human "$bt")"; else bkline="Backup  ${R}stick not mounted${N}"; fi
-printf '  SSD     %s %3s %%   %s%s%s %s\n\n' "$(bar "$sp")" "$sp" "$D" "$(pad "$(human "$su") / $(human "$st")" 17)" "$N" "$bkline"
+printf '  SSD     %s %3s %%%s  %s%s%s %s\n\n' "$(bar "$sp")" "$sp" "$(hot "$sp")" "$D" "$(pad "$(human "$su") / $(human "$st")" 17)" "$N" "$bkline"
 printf '  %s\n\n' "$(IFS='|'; out=""; for h in "${health[@]}"; do out+="$h   "; done; echo "$out")"
 printf '  %s↪ home.imhosting.cc%s' "$A" "$N"
 [ -n "$lip" ] && printf '        %slast login %s from %s%s' "$D" "$lwhen" "$lname" "$N"

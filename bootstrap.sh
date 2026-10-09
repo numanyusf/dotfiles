@@ -297,8 +297,7 @@ main() {
    4. YubiKey FIDO2 enrollment for LUKS + tap-to-sudo (login stays password
                                           — see docs/system-setup.md §3)
    5. Node via nvm, Docker              (optional dev toolchains)
-   6. ./agents/mcp-servers.sh, then `claude` -> /mcp to finish OAuth login
-                                          for figma-remote-mcp and vercel
+   6. ./agents/mcp-servers.sh            (Markitdown MCP for Claude Code)
       (Cursor MCP is agents/cursor-mcp.json → ~/.cursor/mcp.json; for a
        project that needs `cursor-agent mcp enable`, also symlink that
        file to <project>/.cursor/mcp.json — enable is flaky with global-only)

@@ -45,7 +45,7 @@ It does **not** do the system-level security setup (LUKS/TPM2 unlock, YubiKey ta
   paste this file's body in there
 - `agents/cursor-mcp.json` — Cursor MCP servers (**1Password**, **Figma**, **Vercel**, **Markitdown**) for *every* Cursor project → `~/.cursor/mcp.json`. This is the general Cursor MCP source of truth (not per-repo). Markitdown runs via `uvx markitdown-mcp@0.0.1a7` (needs `uv` / `uvx`; config uses `~/.local/bin/uvx`). Install `ffmpeg` (in `packages.txt`) for audio/video conversion; PDF/Office work without it. For projects where `cursor-agent mcp enable` must see a project listing, also symlink this file to `<project>/.cursor/mcp.json`.
 - `agents/claude-settings.json` — Claude Code global settings → `~/.claude/settings.json`
-- `agents/mcp-servers.sh` — registers the same MCP set with Claude Code at **user** scope (available in every Claude project): Figma, Markitdown, 1Password, Vercel. Not Listick-specific. Not run by `bootstrap.sh` — run manually, then `claude` → `/mcp` for OAuth. Cursor uses `cursor-mcp.json` instead of this script.
+- `agents/mcp-servers.sh` — registers Claude Code's user-scope MCP servers on the homelab: only **Markitdown** (via `uvx`). Figma/Vercel dropped while unused (re-add lines are in the script); 1Password's MCP needs the desktop app, so it stays on the laptop. Run it on the host and inside the work box. Not run by `bootstrap.sh`.
 - **Graphify** (`uv tool install graphifyy`, installed by `bootstrap.sh`) — codebase
   knowledge-graph CLI (`github.com/Graphify-Labs/graphify`); the CLI install is global, but
   each repo builds its own `graphify-out/` via `graphify update .` (or `extract`). Agent habit

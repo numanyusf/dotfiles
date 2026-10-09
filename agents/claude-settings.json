@@ -29,7 +29,7 @@
       "**Source control**: The trusted repo (/home/numan/personal/homelab) only — no remotes configured, no additional orgs configured",
       "**Trusted internal domains**: home.imhosting.cc, aio.imhosting.cc, meta.imhosting.cc, traefik.home.imhosting.cc, pdf.imhosting.cc, anime.home.imhosting.cc (subdomains of imhosting.cc contacted repeatedly from this project's homelab tooling)",
       "**Trusted cloud buckets**: None configured",
-      "**Key internal services**: traefik, homepage, jellyfin, backrest, uptime-kuma (self-hosted services referenced repeatedly in this project's transcripts)",
+      "**Key internal services**: traefik, dashboard, jellyfin, adguard, backrest, uptime-kuma (self-hosted Docker Compose stack on the homelab server, /srv/docker)",
       "**Internal package registry**: None configured",
       "**Sensitive data locations & audiences**: any file or store holding personal data, confidential business data, credentials, regulated data, or similarly sensitive material; preserve exact handles when known and share only with audiences cleared at the [named+specifics] bar",
       "**Data retention / declassification**: None configured",
@@ -37,7 +37,7 @@
       "**Protected deployment namespaces / environments**: None configured — fall back to the Sensitive remote targets heuristic",
       "**Protected IaC scopes**: IAM, RBAC, networking, quota, and node-pool resources; anything whose name or tag carries `prod` or `production` as a whole word or name segment",
       "### User-specific",
-      "**Primary use of Claude Code**: homelab infrastructure administration (Kubernetes, Traefik, self-hosted services) for this project",
+      "**Primary use of Claude Code**: homelab administration (Docker Compose stack, Traefik, self-hosted services) from this laptop, mostly over SSH to the homelab server",
       "**Trusted repo**: The git repository at /home/numan/personal/homelab (its working directory) — no remotes currently configured",
       "**Org-specific CLIs**: None configured"
     ]

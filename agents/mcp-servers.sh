@@ -21,8 +21,13 @@ add() {
 }
 
 add --transport http figma-remote-mcp https://mcp.figma.com/mcp --scope user
-add --transport stdio markitdown --scope user -- uvx markitdown-mcp@0.0.1a4
-add --transport stdio 1password --scope user -- 1password-mcp
+add --transport stdio markitdown --scope user -- uvx markitdown-mcp@0.0.1a7
+# WSL has no Linux 1password-mcp; run the Windows one through interop instead.
+OP_MCP=1password-mcp
+if ! command -v "$OP_MCP" >/dev/null 2>&1 && grep -qi microsoft /proc/version 2>/dev/null; then
+  OP_MCP="$(wslpath "$(cmd.exe /c 'echo %LOCALAPPDATA%' 2>/dev/null | tr -d '\r')")/Microsoft/WindowsApps/1password-mcp.exe"
+fi
+add --transport stdio 1password --scope user -- "$OP_MCP"
 add --transport http vercel https://mcp.vercel.com --scope user
 
 echo

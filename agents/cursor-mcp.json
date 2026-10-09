@@ -11,7 +11,7 @@
     },
     "markitdown": {
       "command": "/home/numan/.local/bin/uvx",
-      "args": ["markitdown-mcp@0.0.1a4"]
+      "args": ["markitdown-mcp@0.0.1a7"]
     }
   }
 }

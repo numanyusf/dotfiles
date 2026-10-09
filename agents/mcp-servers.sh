@@ -21,7 +21,7 @@ add() {
 }
 
 add --transport http figma-remote-mcp https://mcp.figma.com/mcp --scope user
-add --transport stdio markitdown --scope user -- uvx markitdown-mcp@0.0.1a4
+add --transport stdio markitdown --scope user -- uvx markitdown-mcp@0.0.1a7
 add --transport stdio 1password --scope user -- 1password-mcp
 add --transport http vercel https://mcp.vercel.com --scope user
 

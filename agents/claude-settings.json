@@ -1,4 +1,5 @@
 {
+  "model": "opus[1m]",
   "hooks": {
     "PreToolUse": [
       {
@@ -23,6 +24,5 @@
       }
     }
   },
-  "theme": "auto",
-  "model": "opus[1m]"
+  "theme": "auto"
 }

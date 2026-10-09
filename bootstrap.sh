@@ -296,8 +296,7 @@ main() {
    4. YubiKey FIDO2 enrollment for LUKS + tap-to-sudo (login stays password
                                           — see docs/system-setup.md §3)
    5. Node via nvm, Docker              (optional dev toolchains)
-   6. ./agents/mcp-servers.sh, then `claude` -> /mcp to finish OAuth login
-                                          for figma-remote-mcp and vercel
+   6. ./agents/mcp-servers.sh            (1Password MCP for Claude Code)
       (Cursor MCP is agents/cursor-mcp.json → ~/.cursor/mcp.json; for a
        project that needs `cursor-agent mcp enable`, also symlink that
        file to <project>/.cursor/mcp.json — enable is flaky with global-only)
@@ -309,13 +308,6 @@ main() {
                                           per-repo. Agent rule is already
                                           global (cursor-graphify.mdc).
                                           Optional: `graphify install --platform cursor`
-   9. ./agents/caveman-install.sh        (output-compression skill for
-                                          Claude Code/Cursor/Continue —
-                                          on by default on Claude Code)
-  10. ./agents/mattpocock-skills-install.sh (curated engineering skills:
-                                          grill-with-docs, tdd, implement,
-                                          research, diagnosing-bugs,
-                                          code-review, git-guardrails)
 
  Then open a new terminal (oh-my-posh + eza) and confirm
  `git log --show-signature` verifies.

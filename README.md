@@ -45,7 +45,7 @@ It does **not** do the system-level security setup (LUKS/TPM2 unlock, YubiKey ta
   paste this file's body in there
 - `agents/cursor-mcp.json` — Cursor MCP servers (**1Password**, **Figma**, **Vercel**, **Markitdown**) for *every* Cursor project → `~/.cursor/mcp.json`. This is the general Cursor MCP source of truth (not per-repo). Markitdown runs via `uvx markitdown-mcp@0.0.1a7` (needs `uv` / `uvx`; config uses `~/.local/bin/uvx`). Install `ffmpeg` (in `packages.txt`) for audio/video conversion; PDF/Office work without it. For projects where `cursor-agent mcp enable` must see a project listing, also symlink this file to `<project>/.cursor/mcp.json`.
 - `agents/claude-settings.json` — Claude Code global settings → `~/.claude/settings.json`
-- `agents/mcp-servers.sh` — registers the same MCP set with Claude Code at **user** scope (available in every Claude project): Figma, Markitdown, 1Password, Vercel. Not Listick-specific. Not run by `bootstrap.sh` — run manually, then `claude` → `/mcp` for OAuth. Cursor uses `cursor-mcp.json` instead of this script.
+- `agents/mcp-servers.sh` — registers Claude Code's user-scope MCP servers on this laptop: only **1Password** (the Windows `1password-mcp.exe` under WSL). The laptop is a thin admin shell; the dev MCP set (Figma, Markitdown, Vercel) lives on the `homelab` branch. Not run by `bootstrap.sh` — run manually.
 - **Graphify** (`uv tool install graphifyy`, installed by `bootstrap.sh`) — codebase
   knowledge-graph CLI (`github.com/Graphify-Labs/graphify`); the CLI install is global, but
   each repo builds its own `graphify-out/` via `graphify update .` (or `extract`). Agent habit
@@ -54,24 +54,6 @@ It does **not** do the system-level security setup (LUKS/TPM2 unlock, YubiKey ta
   `graphify install --platform cursor`
 - `agents/cursor-graphify.mdc` — Cursor alwaysApply Graphify rule (guarded on graph presence)
   → `~/.cursor/rules/graphify.mdc`
-- `agents/caveman-install.sh` — installs **caveman** (`github.com/JuliusBrussee/caveman`),
-  an output-compression skill/plugin, for Claude Code (plugin, compression **on by default**
-  from message one), Cursor, and Continue (both via `npx skills add ... -g`, global scope).
-  Not run by `bootstrap.sh` — the Claude Code step shells out to `npx github:...`, which this
-  machine's auto-mode classifier flags for interactive approval, so run it by hand. **Always
-  pass `-g` to any `skills add` command for this** — without it, the CLI defaults to
-  project scope and drops `.continue/`/`.agents/`/`skills-lock.json` into whatever directory
-  you're standing in when you run it (this happened once, into this repo, before the script
-  was fixed)
-- `agents/mattpocock-skills-install.sh` — installs a curated 6-7 skill subset of
-  [mattpocock/skills](https://github.com/mattpocock/skills) (41 skills total) for Claude Code,
-  Cursor, and Continue: `grill-with-docs` (align on a plan before coding, writes ADRs/glossary),
-  `tdd`, `implement`, `research`, `diagnosing-bugs`, `code-review`, plus
-  `git-guardrails-claude-code` (Claude Code only). The other ~34 skills were left out as
-  team/issue-tracker-oriented (`to-tickets`, `wayfinder`, `triage`, `qa`), unrelated to code
-  (the `writing-*` article skills), or narrow to Matt Pocock's own TypeScript course tooling
-  (`scaffold-exercises`, `migrate-to-shoehorn`, `setup-ts-deep-modules`) — revisit
-  `npx skills add mattpocock/skills -l` if your use case changes
 - `agents/hooks/block-dangerous-git.sh` (from the `git-guardrails-claude-code` skill, extended for Cursor) —
   hard-blocks `git push`, `reset --hard`, `clean -f`/`-fd`, `branch -D`, and `checkout .`/`restore .`
   before they execute — even if you tell the agent to go ahead in chat. This is stricter than the

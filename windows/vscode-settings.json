@@ -2,19 +2,24 @@
   "terminal.integrated.fontFamily": "MesloLGM Nerd Font",
   "editor.fontFamily": "MesloLGM Nerd Font",
   "chat.mcp.gallery.enabled": true,
-  "editor.fontSize": 16,
   "workbench.iconTheme": "material-icon-theme",
   "window.zoomLevel": 1,
   "workbench.colorCustomizations": {
     "[One Dark Pro]": {
-      "editor.background": "#16191D",
-      "sideBar.background": "#16191D",
-      "activityBar.background": "#16191D",
-      "statusBar.background": "#16191D",
-      "titleBar.activeBackground": "#16191D",
-      "editorGroupHeader.tabsBackground": "#16191D"
+      "editor.background": "#1E2127",
+      "sideBar.background": "#1E2127",
+      "activityBar.background": "#1E2127",
+      "statusBar.background": "#1E2127",
+      "titleBar.activeBackground": "#1E2127",
+      "editorGroupHeader.tabsBackground": "#1E2127"
     }
   },
   "material-icon-theme.rootFolders.associations": {},
-  "workbench.colorTheme": "One Dark Pro"
+  "workbench.colorTheme": "One Dark Pro Night Flat",
+  "terminal.integrated.initialHint": false,
+  "explorer.confirmDelete": false,
+  "remote.SSH.remotePlatform": {
+    "homelab": "linux",
+    "homelab-work": "linux"
+  }
 }

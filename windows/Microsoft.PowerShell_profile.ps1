@@ -51,9 +51,13 @@ function Import-PSFzfOnce {
         Set-PSReadLineKeyHandler -Key 'Alt+c' -ScriptBlock { Invoke-FuzzySetLocation }
     }
 }
-Set-PSReadLineKeyHandler -Key 'Ctrl+r' -ScriptBlock { Import-PSFzfOnce; Invoke-FzfPsReadlineHandlerHistory }
-Set-PSReadLineKeyHandler -Key 'Ctrl+t' -ScriptBlock { Import-PSFzfOnce; Invoke-FzfPsReadlineHandlerProvider }
-Set-PSReadLineKeyHandler -Key 'Alt+c' -ScriptBlock { Import-PSFzfOnce; Invoke-FuzzySetLocation }
+# Only bind when fzf and PSFzf are installed; checks module dirs directly since Get-Module -ListAvailable is slow.
+$hasPSFzf = $env:PSModulePath -split [IO.Path]::PathSeparator | Where-Object { Test-Path "$_\PSFzf" } | Select-Object -First 1
+if ($hasPSFzf -and (Get-Command fzf -ErrorAction SilentlyContinue)) {
+    Set-PSReadLineKeyHandler -Key 'Ctrl+r' -ScriptBlock { Import-PSFzfOnce; Invoke-FzfPsReadlineHandlerHistory }
+    Set-PSReadLineKeyHandler -Key 'Ctrl+t' -ScriptBlock { Import-PSFzfOnce; Invoke-FzfPsReadlineHandlerProvider }
+    Set-PSReadLineKeyHandler -Key 'Alt+c' -ScriptBlock { Import-PSFzfOnce; Invoke-FuzzySetLocation }
+}
 
 # --- gh completion (cached; regenerated when gh is updated) ---
 $gh = Get-Command gh -ErrorAction SilentlyContinue

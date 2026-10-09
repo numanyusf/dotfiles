@@ -1,9 +1,26 @@
 # PowerShell 7 profile -> Documents\PowerShell\Microsoft.PowerShell_profile.ps1 (copied, not symlinked)
 # Windows counterpart of ~/.dotfiles/bashrc: oh-my-posh prompt, eza, fzf, prefix history search, gh completion.
 
+# Generated init scripts (oh-my-posh, gh) are cached here so the profile doesn't launch the exes on every start.
+$profileCache = "$env:LOCALAPPDATA\pwsh-profile-cache"
+if (-not (Test-Path $profileCache)) { New-Item -ItemType Directory $profileCache | Out-Null }
+
 # --- prompt: oh-my-posh (emodipt-extend), same theme as Linux ---
-if (Get-Command oh-my-posh -ErrorAction SilentlyContinue) {
-    oh-my-posh init pwsh --config "$HOME\.config\oh-my-posh\emodipt-extend.omp.json" | Invoke-Expression
+# `init` prints one line pointing at oh-my-posh's own cached script; reuse it with a fresh session id.
+# Refreshed daily, when the theme changes, or when oh-my-posh drops that script (e.g. after an upgrade).
+$ompConfig = "$HOME\.config\oh-my-posh\emodipt-extend.omp.json"
+$ompCache = "$profileCache\omp-init.ps1"
+$ompInit = if (Test-Path $ompCache) { Get-Content -Raw $ompCache }
+$ompStale = -not $ompInit -or
+    (Get-Item $ompCache).LastWriteTime -lt (Get-Date).AddDays(-1) -or
+    (Get-Item $ompConfig).LastWriteTime -gt (Get-Item $ompCache).LastWriteTime -or
+    -not ($ompInit -match "& '([^']+)'" -and (Test-Path $Matches[1]))
+if ($ompStale -and (Get-Command oh-my-posh -ErrorAction SilentlyContinue)) {
+    $ompInit = oh-my-posh init pwsh --config $ompConfig | Out-String
+    Set-Content $ompCache $ompInit -NoNewline
+}
+if ($ompInit) {
+    $ompInit -replace '(POSH_SESSION_ID = ")[^"]+', "`${1}$([guid]::NewGuid())" | Invoke-Expression
 }
 
 # --- LS_COLORS from vivid (one-dark, dirs gold), read by eza ---
@@ -26,15 +43,26 @@ Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward
 Set-PSReadLineOption -PredictionSource History -PredictionViewStyle ListView -HistoryNoDuplicates  # F2 toggles inline/list
 
 # --- fzf: Ctrl-R history, Ctrl-T files, Alt-C cd (PSFzf module) ---
-if ((Get-Command fzf -ErrorAction SilentlyContinue) -and (Get-Module -ListAvailable PSFzf)) {
-    Import-Module PSFzf
-    Set-PsFzfOption -PSReadlineChordProvider 'Ctrl+t' -PSReadlineChordReverseHistory 'Ctrl+r'
-    Set-PSReadLineKeyHandler -Key 'Alt+c' -ScriptBlock { Invoke-FuzzySetLocation }
+# PSFzf takes ~0.3 s to import, so it loads on the first keypress instead of at startup.
+function Import-PSFzfOnce {
+    if (-not (Get-Module PSFzf)) {
+        Import-Module PSFzf
+        Set-PsFzfOption -PSReadlineChordProvider 'Ctrl+t' -PSReadlineChordReverseHistory 'Ctrl+r'
+        Set-PSReadLineKeyHandler -Key 'Alt+c' -ScriptBlock { Invoke-FuzzySetLocation }
+    }
 }
+Set-PSReadLineKeyHandler -Key 'Ctrl+r' -ScriptBlock { Import-PSFzfOnce; Invoke-FzfPsReadlineHandlerHistory }
+Set-PSReadLineKeyHandler -Key 'Ctrl+t' -ScriptBlock { Import-PSFzfOnce; Invoke-FzfPsReadlineHandlerProvider }
+Set-PSReadLineKeyHandler -Key 'Alt+c' -ScriptBlock { Import-PSFzfOnce; Invoke-FuzzySetLocation }
 
-# --- gh completion ---
-if (Get-Command gh -ErrorAction SilentlyContinue) {
-    gh completion -s powershell | Out-String | Invoke-Expression
+# --- gh completion (cached; regenerated when gh is updated) ---
+$gh = Get-Command gh -ErrorAction SilentlyContinue
+if ($gh) {
+    $ghCache = "$profileCache\gh-completion.ps1"
+    if (-not (Test-Path $ghCache) -or (Get-Item $gh.Source).LastWriteTime -gt (Get-Item $ghCache).LastWriteTime) {
+        gh completion -s powershell | Out-String | Set-Content $ghCache
+    }
+    . $ghCache
 }
 
 # --- bat: cat with syntax highlighting ---

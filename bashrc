@@ -195,3 +195,7 @@ if [ -n "$SSH_CONNECTION" ] && [ -z "$TMUX" ] && [ "$TERM_PROGRAM" != "vscode" ]
   "$HOME/.dotfiles/scripts/motd.sh"
 fi
 # --- end status screen ---
+
+# Claude accounts: separate config dir = separate login, history, settings
+alias personal-pro='claude'
+alias tuni-team='CLAUDE_CONFIG_DIR=$HOME/.claude-tuni-team claude'

@@ -100,6 +100,8 @@ alias l='ls -CF'
 # Claude accounts: separate config dir = separate login, history, settings
 alias personal-pro='claude'
 alias tuni-team='CLAUDE_CONFIG_DIR=$HOME/.claude-tuni-team claude'
+# 1Password CLI is the Windows one (unlocks through the desktop app); WSL only sees it as op.exe
+command -v op >/dev/null || alias op='op.exe'
 
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert

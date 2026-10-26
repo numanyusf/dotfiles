@@ -101,7 +101,7 @@ alias l='ls -CF'
 alias personal-pro='claude'
 alias tuni-team='CLAUDE_CONFIG_DIR=$HOME/.claude-tuni-team claude'
 # 1Password CLI is the Windows one (unlocks through the desktop app); WSL only sees it as op.exe
-command -v op >/dev/null || alias op='op.exe'
+[ -x /usr/bin/op ] || alias op='op.exe'
 
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
@@ -163,18 +163,6 @@ bind '"\eOA": history-search-backward'
 bind '"\eOB": history-search-forward'
 # --- end history prefix search ---
 # --- end prompt ---
-[ -s "/opt/adguard-cli/bash-completion.sh" ] && \. "/opt/adguard-cli/bash-completion.sh"
-
-# Added by LM Studio CLI tool (lms)
-export PATH="$PATH:/home/numan/.lmstudio/bin"
-
-# pnpm
-export PNPM_HOME="/home/numan/.local/share/pnpm"
-case ":$PATH:" in
-  *":$PNPM_HOME:"*) ;;
-  *) export PATH="$PNPM_HOME:$PATH" ;;
-esac
-# pnpm end
 
 # --- WSL: bridge the Windows 1Password SSH agent to ~/.1password/agent.sock (Claude Code 2026-10-07) ---
 # ssh/config points every host at that socket, same path as the native Linux 1Password agent.
@@ -183,8 +171,8 @@ if [ -n "$WSL_DISTRO_NAME" ]; then
     export SSH_AUTH_SOCK="$HOME/.1password/agent.sock"
     export BROWSER="$HOME/.dotfiles/scripts/winbrowser"   # open links in the Windows browser
     _npr="/mnt/c/Users/$USER/AppData/Local/npiperelay/npiperelay.exe"
-    if command -v socat >/dev/null 2>&1 && [ -x "$_npr" ] \
-       && ! ss -lx 2>/dev/null | grep -qF "$SSH_AUTH_SOCK"; then
+    if ! ss -lx 2>/dev/null | grep -qF "$SSH_AUTH_SOCK" \
+       && command -v socat >/dev/null 2>&1 && [ -x "$_npr" ]; then
         mkdir -p "${SSH_AUTH_SOCK%/*}" && rm -f "$SSH_AUTH_SOCK"
         (setsid socat UNIX-LISTEN:"$SSH_AUTH_SOCK",fork \
             EXEC:"$_npr -ei -s //./pipe/openssh-ssh-agent",nofork >/dev/null 2>&1 &)

@@ -2,23 +2,7 @@
 description: General engineering rules, applied in every project
 alwaysApply: true
 ---
-<!-- Keep most sections in sync with agents/AGENTS.md. The Communication
-     (caveman) section is Cursor-only — Claude Code uses the caveman plugin
-     SessionStart instead. -->
-
-## Communication (caveman — default on)
-
-Default reply style for every Cursor agent session: **caveman full**
-(`~/.agents/skills/caveman/SKILL.md`). Same brain, fewer tokens.
-
-- Terse caveman prose; keep all technical substance; drop fluff.
-- Drop articles, filler, pleasantries, hedging. Fragments OK. Short synonyms.
-- No tool-call narration, decorative tables/emoji, or long raw error dumps unless asked.
-- Code blocks, errors, API/CLI names, commit keywords: exact.
-- Do not announce the style. Off only: user says `stop caveman` / `normal mode`.
-- Intensity: `/caveman lite|full|ultra` (and wenyan variants). Default stays **full**.
-- Auto-clarity: normal prose for security warnings, irreversible-action confirmations,
-  and multi-step sequences where fragments could mislead; then resume caveman.
+<!-- Keep in sync with agents/AGENTS.md. -->
 
 ## Verification
 

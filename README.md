@@ -54,15 +54,6 @@ It does **not** do the system-level security setup (LUKS/TPM2 unlock, YubiKey ta
   `graphify install --platform cursor`
 - `agents/cursor-graphify.mdc` — Cursor alwaysApply Graphify rule (guarded on graph presence)
   → `~/.cursor/rules/graphify.mdc`
-- `agents/caveman-install.sh` — installs **caveman** (`github.com/JuliusBrussee/caveman`),
-  an output-compression skill/plugin, for Claude Code (plugin, compression **on by default**
-  from message one), Cursor, and Continue (both via `npx skills add ... -g`, global scope).
-  Not run by `bootstrap.sh` — the Claude Code step shells out to `npx github:...`, which this
-  machine's auto-mode classifier flags for interactive approval, so run it by hand. **Always
-  pass `-g` to any `skills add` command for this** — without it, the CLI defaults to
-  project scope and drops `.continue/`/`.agents/`/`skills-lock.json` into whatever directory
-  you're standing in when you run it (this happened once, into this repo, before the script
-  was fixed)
 - `agents/mattpocock-skills-install.sh` — installs a curated 6-7 skill subset of
   [mattpocock/skills](https://github.com/mattpocock/skills) (41 skills total) for Claude Code,
   Cursor, and Continue: `grill-with-docs` (align on a plan before coding, writes ADRs/glossary),
@@ -71,7 +62,13 @@ It does **not** do the system-level security setup (LUKS/TPM2 unlock, YubiKey ta
   team/issue-tracker-oriented (`to-tickets`, `wayfinder`, `triage`, `qa`), unrelated to code
   (the `writing-*` article skills), or narrow to Matt Pocock's own TypeScript course tooling
   (`scaffold-exercises`, `migrate-to-shoehorn`, `setup-ts-deep-modules`) — revisit
-  `npx skills add mattpocock/skills -l` if your use case changes
+  `npx skills add mattpocock/skills -l` if your use case changes. **Always pass `-g` to any
+  `skills add`**: without it the CLI defaults to project scope and drops
+  `.continue/`/`.agents/`/`skills-lock.json` into whatever directory you're standing in
+- `agents/claude-accounts-sync.sh` — gives the tuni-team Claude account (`~/.claude-tuni-team`)
+  the same CLAUDE.md, settings, skills and plugins as `~/.claude`; plugins in both accounts are
+  set to exactly the marketplaces + `enabledPlugins` in `agents/claude-settings.json`. Re-run
+  after adding or removing a skill or plugin
 - `agents/hooks/block-dangerous-git.sh` (from the `git-guardrails-claude-code` skill, extended for Cursor) —
   hard-blocks `git push`, `reset --hard`, `clean -f`/`-fd`, `branch -D`, and `checkout .`/`restore .`
   before they execute — even if you tell the agent to go ahead in chat. This is stricter than the
@@ -81,10 +78,7 @@ It does **not** do the system-level security setup (LUKS/TPM2 unlock, YubiKey ta
   - **Cursor:** `beforeShellExecution` via `agents/cursor-hooks.json` → `~/.cursor/hooks.json`
     and `~/.cursor/hooks/block-dangerous-git.sh`
 - `agents/cursor-hooks.json` — Cursor user hooks → `~/.cursor/hooks.json`:
-  - `sessionStart` → `cursor-caveman-session.sh` (caveman **full** on by default, like Claude’s plugin)
   - `beforeShellExecution` → `block-dangerous-git.sh` (hard-block destructive git)
-- `agents/cursor-general.mdc` — includes a Cursor-only **Communication (caveman)** section
-  (`alwaysApply: true`) so caveman stays on every reply; say `stop caveman` / `normal mode` to opt out
 - `packages.txt` — apt package manifest installed by `bootstrap.sh`
 - `scripts/remove-luks-pin.sh` — re-bind TPM2 to LUKS after a firmware/PCR-7 change (see the doc)
 - `docs/ubuntu-setup-guide.md` — **full end-to-end runbook** for this machine (install → verified), stitching bootstrap + the docs below in order
@@ -124,7 +118,6 @@ ln -sfn ~/.dotfiles/agents/cursor-mcp.json ~/.cursor/mcp.json
 ln -sfn ~/.dotfiles/agents/cursor-hooks.json ~/.cursor/hooks.json
 ln -sfn ~/.dotfiles/agents/hooks/block-dangerous-git.sh ~/.claude/hooks/block-dangerous-git.sh
 ln -sfn ~/.dotfiles/agents/hooks/block-dangerous-git.sh ~/.cursor/hooks/block-dangerous-git.sh
-ln -sfn ~/.dotfiles/agents/hooks/cursor-caveman-session.sh ~/.cursor/hooks/cursor-caveman-session.sh
 ```
 
 (`ls_colors` needs no symlink — `bashrc` reads `~/.dotfiles/ls_colors` directly. Regenerate with `vivid generate one-dark | sed 's/di=[^:]*/di=0;38;2;229;192;123/' > ~/.dotfiles/ls_colors`.)

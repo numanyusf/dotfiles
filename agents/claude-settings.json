@@ -14,13 +14,21 @@
     ]
   },
   "enabledPlugins": {
-    "caveman@caveman": true
+    "ponytail@ponytail": true
   },
   "extraKnownMarketplaces": {
-    "caveman": {
+    "ponytail": {
       "source": {
         "source": "github",
-        "repo": "JuliusBrussee/caveman"
+        "repo": "DietrichGebert/ponytail"
+      }
+    }
+  },
+  "pluginConfigs": {
+    "ponytail@ponytail": {
+      "options": {
+        "ledger": true,
+        "sendNames": true
       }
     }
   },

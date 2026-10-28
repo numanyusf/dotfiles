@@ -234,7 +234,6 @@ make_symlinks() {
   link agents/cursor-hooks.json  "$HOME/.cursor/hooks.json"
   link agents/hooks/block-dangerous-git.sh "$HOME/.claude/hooks/block-dangerous-git.sh"
   link agents/hooks/block-dangerous-git.sh "$HOME/.cursor/hooks/block-dangerous-git.sh"
-  link agents/hooks/cursor-caveman-session.sh "$HOME/.cursor/hooks/cursor-caveman-session.sh"
 
   # ssh needs strict perms; symlink the individual files, not the dir
   mkdir -p "$HOME/.ssh" && chmod 700 "$HOME/.ssh"
@@ -309,13 +308,14 @@ main() {
                                           per-repo. Agent rule is already
                                           global (cursor-graphify.mdc).
                                           Optional: `graphify install --platform cursor`
-   9. ./agents/caveman-install.sh        (output-compression skill for
-                                          Claude Code/Cursor/Continue —
-                                          on by default on Claude Code)
-  10. ./agents/mattpocock-skills-install.sh (curated engineering skills:
+   9. ./agents/mattpocock-skills-install.sh (curated engineering skills:
                                           grill-with-docs, tdd, implement,
                                           research, diagnosing-bugs,
                                           code-review, git-guardrails)
+  10. ./agents/claude-accounts-sync.sh  (tuni-team gets the same rules,
+                                          settings, skills and plugins as
+                                          ~/.claude — re-run after adding a
+                                          skill or plugin)
 
  Then open a new terminal (oh-my-posh + eza) and confirm
  `git log --show-signature` verifies.

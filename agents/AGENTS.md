@@ -82,3 +82,7 @@ CLI is global (`graphify`). Graphs live per repo in `graphify-out/`.
 
 Cursor also loads `agents/cursor-graphify.mdc` → `~/.cursor/rules/graphify.mdc`
 (`alwaysApply`, guarded on graph presence).
+
+# graphify
+- **graphify** (`~/.claude/skills/graphify/SKILL.md`) - any input to knowledge graph. Trigger: `/graphify`
+When the user types `/graphify`, use the installed graphify skill or instructions before doing anything else.

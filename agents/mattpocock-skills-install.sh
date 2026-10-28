@@ -9,9 +9,9 @@
 # "Coding agents" section for the reasoning behind this specific subset and
 # what was left out.
 #
-# IMPORTANT: always pass -g (global scope) — see the comment in
-# caveman-install.sh for what happens without it (drops project-scoped
-# .agents/.continue/skills-lock.json into whatever directory you're in).
+# IMPORTANT: always pass -g (global scope) — without it the CLI drops
+# project-scoped .agents/.continue/skills-lock.json into whatever directory
+# you're in.
 #
 # git-guardrails-claude-code is installed for Claude Code only — it's
 # Claude-Code-hook-specific and has no Cursor/Continue equivalent. Once

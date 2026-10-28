@@ -4,6 +4,7 @@
   "chat.mcp.gallery.enabled": true,
   "workbench.iconTheme": "material-icon-theme",
   "window.zoomLevel": 1,
+  "window.restoreWindows": "none",
   "workbench.colorCustomizations": {
     "[One Dark Pro]": {
       "editor.background": "#1E2127",

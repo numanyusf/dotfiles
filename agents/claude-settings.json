@@ -32,8 +32,5 @@
       }
     }
   },
-  "theme": "auto",
-  "env": {
-    "CLAUDE_CODE_DISABLE_MOUSE": "1"
-  }
+  "theme": "auto"
 }

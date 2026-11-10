@@ -13,7 +13,7 @@ Host homelab
     ForwardAgent yes
 
 # homelab directly on the home network, for when Tailscale is off
-Host lan
+Host homelab-lan
     HostName 192.168.50.30
     User numan
     IdentityFile ~/.ssh/homelab.pub

@@ -11,3 +11,14 @@ Host homelab
     IdentityFile ~/.ssh/homelab_yubikey_c
     IdentitiesOnly yes
     ForwardAgent yes
+
+# homelab directly on the home network, for when Tailscale is off
+Host lan
+    HostName 192.168.50.30
+    User numan
+    IdentityFile ~/.ssh/homelab.pub
+    # fallback when 1Password is unavailable: YubiKey FIDO2 keys (resident, PIN + touch)
+    IdentityFile ~/.ssh/homelab_yubikey_5c
+    IdentityFile ~/.ssh/homelab_yubikey_c
+    IdentitiesOnly yes
+    ForwardAgent yes

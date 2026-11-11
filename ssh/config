@@ -32,6 +32,7 @@ Host homelab
 # homelab directly on the home network, for when Tailscale is off
 Host homelab-lan
 	HostName 192.168.50.30
+	ConnectTimeout 10
 	User numan
 	IdentityFile ~/.ssh/homelab.pub
 	IdentitiesOnly yes

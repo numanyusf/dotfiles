@@ -45,7 +45,7 @@ sum=$(curl -s -m 1 https://home.imhosting.cc/api/summary 2>/dev/null)
 dot() { printf '%s●%s %s' "$1" "$N" "$2"; }
 health=()
 if (( crun == ctot )); then health+=("$(dot "$G" "$crun/$ctot containers")"); else health+=("$(dot "$R" "$crun/$ctot containers")"); fi
-if [ -n "$sum" ] && command -v jq >/dev/null; then
+if command -v jq >/dev/null && jq -e .kuma >/dev/null 2>&1 <<<"$sum"; then
   ku=$(jq -r '.kuma.up // empty' <<<"$sum"); kt=$(jq -r '.kuma.total // empty' <<<"$sum")
   if [ -n "$ku" ]; then
     if [ "$ku" = "$kt" ]; then health+=("$(dot "$G" "$ku/$kt monitors up")")

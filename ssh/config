@@ -36,3 +36,12 @@ Host homelab-lan
 	IdentityFile ~/.ssh/homelab.pub
 	IdentitiesOnly yes
 	ForwardAgent yes
+
+# work box: hop through the host; at home over the LAN, away via Tailscale's 192.168.50.30 route
+Host homelab-work
+	HostName 172.31.0.10
+	User numan
+	ProxyJump homelab-lan
+	IdentityFile ~/.ssh/homelab.pub
+	IdentitiesOnly yes
+	ForwardAgent yes

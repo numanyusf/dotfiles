@@ -312,10 +312,6 @@ main() {
                                           grill-with-docs, tdd, implement,
                                           research, diagnosing-bugs,
                                           code-review, git-guardrails)
-  10. ./agents/claude-accounts-sync.sh  (tuni-team gets the same rules,
-                                          settings, skills and plugins as
-                                          ~/.claude — re-run after adding a
-                                          skill or plugin)
 
  Then open a new terminal (oh-my-posh + eza) and confirm
  `git log --show-signature` verifies.

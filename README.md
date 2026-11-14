@@ -65,10 +65,6 @@ It does **not** do the system-level security setup (LUKS/TPM2 unlock, YubiKey ta
   `npx skills add mattpocock/skills -l` if your use case changes. **Always pass `-g` to any
   `skills add`**: without it the CLI defaults to project scope and drops
   `.continue/`/`.agents/`/`skills-lock.json` into whatever directory you're standing in
-- `agents/claude-accounts-sync.sh` — gives the tuni-team Claude account (`~/.claude-tuni-team`)
-  the same CLAUDE.md, settings, skills and plugins as `~/.claude`; plugins in both accounts are
-  set to exactly the marketplaces + `enabledPlugins` in `agents/claude-settings.json`. Re-run
-  after adding or removing a skill or plugin
 - `agents/hooks/block-dangerous-git.sh` (from the `git-guardrails-claude-code` skill, extended for Cursor) —
   hard-blocks `git push`, `reset --hard`, `clean -f`/`-fd`, `branch -D`, and `checkout .`/`restore .`
   before they execute — even if you tell the agent to go ahead in chat. This is stricter than the

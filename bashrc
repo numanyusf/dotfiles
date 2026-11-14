@@ -97,9 +97,6 @@ alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
 
-# Claude accounts: separate config dir = separate login, history, settings
-alias personal-pro='claude'
-alias tuni-team='CLAUDE_CONFIG_DIR=$HOME/.claude-tuni-team claude'
 # 1Password CLI is the Windows one (unlocks through the desktop app); WSL only sees it as op.exe
 [ -x /usr/bin/op ] || alias op='op.exe'
 
